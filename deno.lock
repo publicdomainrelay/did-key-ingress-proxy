@@ -251,10 +251,6 @@
       }
     },
     "links": {
-      "jsr:@publicdomainrelay/app-attest-abc@0.0.0": {},
-      "jsr:@publicdomainrelay/app-attest-common@0.0.0": {},
-      "jsr:@publicdomainrelay/app-attest-darwin@0.0.0": {},
-      "jsr:@publicdomainrelay/app-attest-none@0.0.0": {},
       "jsr:@publicdomainrelay/atproto-attestation-port@0.0.0": {
         "dependencies": [
           "npm:@ipld/dag-cbor@^9.2.0",
@@ -355,6 +351,9 @@
           "jsr:@publicdomainrelay/container-backend-common@0"
         ]
       },
+      "jsr:@publicdomainrelay/device-key-abc@0.0.0": {},
+      "jsr:@publicdomainrelay/device-key-common@0.0.0": {},
+      "jsr:@publicdomainrelay/device-key-webcrypto@0.0.0": {},
       "jsr:@publicdomainrelay/did-plc@0.0.0": {
         "dependencies": [
           "npm:@ipld/dag-cbor@9",
@@ -628,7 +627,7 @@
       "jsr:@publicdomainrelay/secret-store-gnome@0.0.0": {},
       "jsr:@publicdomainrelay/secret-store-win32@0.0.0": {
         "dependencies": [
-          "jsr:@publicdomainrelay/app-attest-abc@0",
+          "jsr:@publicdomainrelay/device-key-abc@0",
           "jsr:@publicdomainrelay/logger@0"
         ]
       },
