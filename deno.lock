@@ -299,6 +299,36 @@
           "npm:yaml@^2.7.0"
         ]
       },
+      "jsr:@publicdomainrelay/compute-contract-gateway-abc@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/compute-contract-gateway-common@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/compute-contract-gateway-common@0.0.0": {},
+      "jsr:@publicdomainrelay/compute-contract-gateway-xrpc@0.0.0": {
+        "dependencies": [
+          "jsr:@hono/hono@4",
+          "jsr:@publicdomainrelay/atproto-repo-deno@0",
+          "jsr:@publicdomainrelay/cli-args-env@0",
+          "jsr:@publicdomainrelay/cloud-init-common@0",
+          "jsr:@publicdomainrelay/compute-contract-gateway-abc@0",
+          "jsr:@publicdomainrelay/compute-contract-gateway-common@0",
+          "jsr:@publicdomainrelay/did-plc@0",
+          "jsr:@publicdomainrelay/hono-factory-atproto-repo-deno@0",
+          "jsr:@publicdomainrelay/logger@0",
+          "jsr:@publicdomainrelay/market-abc@0",
+          "jsr:@publicdomainrelay/market-atproto@0",
+          "jsr:@publicdomainrelay/market-common@0",
+          "jsr:@publicdomainrelay/market-lexicons@0",
+          "jsr:@publicdomainrelay/market-policy@0",
+          "jsr:@publicdomainrelay/requester-abc@0",
+          "jsr:@publicdomainrelay/requester-xrpc@0",
+          "jsr:@publicdomainrelay/serve@0",
+          "jsr:@publicdomainrelay/xrpc-relay@0",
+          "npm:@atproto/crypto@~0.4.4",
+          "npm:@atproto/identity@0.5"
+        ]
+      },
       "jsr:@publicdomainrelay/compute-deno-abc@0.0.0": {
         "dependencies": [
           "jsr:@publicdomainrelay/compute-deno-common@0"
@@ -319,6 +349,7 @@
       "jsr:@publicdomainrelay/compute-provider-common@0.0.0": {},
       "jsr:@publicdomainrelay/compute-provider-digitalocean@0.0.0": {
         "dependencies": [
+          "jsr:@publicdomainrelay/atproto-helpers@0",
           "jsr:@publicdomainrelay/compute-provider-abc@0",
           "jsr:@publicdomainrelay/oidc-issuer-hono@0",
           "jsr:@publicdomainrelay/serve@0",
@@ -327,6 +358,7 @@
       },
       "jsr:@publicdomainrelay/compute-provider-local@0.0.0": {
         "dependencies": [
+          "jsr:@publicdomainrelay/atproto-helpers@0",
           "jsr:@publicdomainrelay/compute-provider-abc@0",
           "jsr:@publicdomainrelay/oidc-issuer-hono@0",
           "jsr:@publicdomainrelay/serve@0",
@@ -394,6 +426,16 @@
         ]
       },
       "jsr:@publicdomainrelay/hono-factory-atproto-repo-deno@0.0.0": {},
+      "jsr:@publicdomainrelay/hono-factory-compute-contract-gateway-xrpc@0.0.0": {
+        "dependencies": [
+          "jsr:@hono/hono@4",
+          "jsr:@publicdomainrelay/compute-contract-gateway-abc@0",
+          "jsr:@publicdomainrelay/compute-contract-gateway-common@0",
+          "jsr:@publicdomainrelay/logger@0",
+          "jsr:@publicdomainrelay/market-atproto@0",
+          "npm:@atproto/identity@0.5"
+        ]
+      },
       "jsr:@publicdomainrelay/hono-factory-compute-deno-atproto@0.0.0": {
         "dependencies": [
           "jsr:@hono/hono@4",
@@ -451,6 +493,16 @@
         "dependencies": [
           "jsr:@publicdomainrelay/package-store-abc@0",
           "npm:hono@^4.12.23"
+        ]
+      },
+      "jsr:@publicdomainrelay/hono-factory-policy-builtin@0.0.0": {
+        "dependencies": [
+          "jsr:@hono/hono@4",
+          "jsr:@publicdomainrelay/hono-error-middleware@0",
+          "jsr:@publicdomainrelay/logger@0",
+          "jsr:@publicdomainrelay/policy-abc@0",
+          "jsr:@publicdomainrelay/policy-builtin@0",
+          "jsr:@publicdomainrelay/policy-common@0"
         ]
       },
       "jsr:@publicdomainrelay/hono-factory-requester-xrpc@0.0.0": {
@@ -526,6 +578,13 @@
           "jsr:@publicdomainrelay/market-policy-abc@0"
         ]
       },
+      "jsr:@publicdomainrelay/market-policy-remote@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/market-common@0",
+          "jsr:@publicdomainrelay/market-lexicons@0",
+          "jsr:@publicdomainrelay/market-policy-abc@0"
+        ]
+      },
       "jsr:@publicdomainrelay/market-policy-workflow-gha@0.0.0": {
         "dependencies": [
           "jsr:@publicdomainrelay/market-lexicons@0",
@@ -538,6 +597,7 @@
           "jsr:@publicdomainrelay/market-policy-abc@0",
           "jsr:@publicdomainrelay/market-policy-direct-network@0",
           "jsr:@publicdomainrelay/market-policy-only-me@0",
+          "jsr:@publicdomainrelay/market-policy-remote@0",
           "jsr:@publicdomainrelay/market-policy-workflow-gha@0"
         ]
       },
@@ -576,6 +636,18 @@
           "jsr:@publicdomainrelay/package-store-abc@0"
         ]
       },
+      "jsr:@publicdomainrelay/policy-abc@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/policy-common@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/policy-builtin@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/policy-abc@0",
+          "jsr:@publicdomainrelay/policy-common@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/policy-common@0.0.0": {},
       "jsr:@publicdomainrelay/qemu-standalone@0.0.0": {},
       "jsr:@publicdomainrelay/rbac-atproto@0.0.0": {
         "dependencies": [
