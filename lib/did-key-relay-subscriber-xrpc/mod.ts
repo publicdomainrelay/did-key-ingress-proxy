@@ -72,6 +72,7 @@ export async function createSubscriber(
   interface TunnelState { conn?: Deno.Conn; queue: Uint8Array[]; closed: boolean; }
   const tunnels = new Map<string, TunnelState>();
   const wsSubs = new Map<string, WebSocket>();
+  const directSubs = new Map<string, () => void>();
 
   function closeTunnel(subscriptionId: string): void {
     const t = tunnels.get(subscriptionId);
@@ -262,6 +263,41 @@ export async function createSubscriber(
           );
           break;
         }
+        if (opts.directSubscriptionHandler && subNsid && subNsid !== TUNNEL_NSID) {
+          const subscriptionId = msg.subscriptionId as string;
+          const params = (msg.params as Record<string, string>) ?? {};
+          const unsub = opts.directSubscriptionHandler(
+            subscriptionId,
+            subNsid,
+            params,
+            (event) => {
+              if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                  $type: `${SUBSCRIBE_NSID}#subscriptionEvent`,
+                  subscriptionId,
+                  message: event,
+                }));
+              }
+            },
+            (data) => {
+              if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                  $type: `${SUBSCRIBE_NSID}#subscriptionData`,
+                  subscriptionId,
+                  data: encodeBase64(data),
+                }));
+              }
+            },
+          );
+          if (unsub) directSubs.set(subscriptionId, unsub);
+          if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({
+              $type: `${SUBSCRIBE_NSID}#subscriptionOpen`,
+              subscriptionId,
+            }));
+          }
+          break;
+        }
         if (opts.synthetic) {
           const subscriptionId = msg.subscriptionId as string;
           if (ws.readyState === WebSocket.OPEN) {
@@ -301,7 +337,11 @@ export async function createSubscriber(
       case "subscriptionCancel":
       case "subscriptionClose": {
         const subscriptionId = msg.subscriptionId as string | undefined;
-        if (subscriptionId) closeTunnel(subscriptionId);
+        if (subscriptionId) {
+          closeTunnel(subscriptionId);
+          const directUnsub = directSubs.get(subscriptionId);
+          if (directUnsub) { directSubs.delete(subscriptionId); try { directUnsub(); } catch { /* ignore */ } }
+        }
         break;
       }
     }
@@ -374,6 +414,7 @@ export async function createSubscriber(
           syntheticIntervals.clear();
           for (const id of [...wsSubs.keys()]) closeTunnel(id);
           for (const id of [...tunnels.keys()]) closeTunnel(id);
+          for (const [id, unsub] of directSubs) { directSubs.delete(id); try { unsub(); } catch { /* ignore */ } }
           if (!settled) {
             settled = true;
             clearTimeout(timeout);

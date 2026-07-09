@@ -25,6 +25,20 @@ export interface SubscriberOptions {
    * so the local serve's bound port can be resolved after it starts listening.
    */
   wsTarget?: () => { hostname: string; port: number } | undefined;
+  /**
+   * When set, inbound relay subscriptions for any non-tunnel NSID call this
+   * handler directly instead of opening a loopback WebSocket to wsTarget.
+   * The handler receives (subscriptionId, nsid, params, onEvent, onData) and
+   * must return an unsubscribe function. Frames are forwarded over the relay
+   * WebSocket. Use when the firehose source is in-process (no TCP needed).
+   */
+  directSubscriptionHandler?: (
+    subscriptionId: string,
+    nsid: string,
+    params: Record<string, string>,
+    onEvent: (event: unknown) => void,
+    onData: (data: Uint8Array) => void,
+  ) => (() => void) | void;
 }
 
 export interface SubscriberHandle {

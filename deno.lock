@@ -299,6 +299,7 @@
           "npm:yaml@^2.7.0"
         ]
       },
+      "jsr:@publicdomainrelay/cocore-api@0.0.0": {},
       "jsr:@publicdomainrelay/compute-contract-gateway-abc@0.0.0": {
         "dependencies": [
           "jsr:@publicdomainrelay/compute-contract-gateway-common@0"
@@ -365,6 +366,8 @@
           "npm:yaml@^2.7.0"
         ]
       },
+      "jsr:@publicdomainrelay/compute-spa-keypair-noble@0.0.0": {},
+      "jsr:@publicdomainrelay/compute-spa-relay-client@0.0.0": {},
       "jsr:@publicdomainrelay/container-backend-abc@0.0.0": {
         "dependencies": [
           "jsr:@publicdomainrelay/container-backend-common@0"
