@@ -1,0 +1,9 @@
+{
+  "name": "@publicdomainrelay/did-key-ingress-proxy-subscriber-abc",
+  "version": "0.0.0",
+  "license": "Unlicense",
+  "exports": "./mod.ts",
+  "imports": {
+    "@publicdomainrelay/did-key-ingress-proxy-common": "jsr:@publicdomainrelay/did-key-ingress-proxy-common@^0"
+  }
+}

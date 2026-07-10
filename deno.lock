@@ -183,70 +183,70 @@
       "npm:@atproto/crypto@0.5"
     ],
     "members": {
-      "hono-did-key-relay-relayer": {
+      "hono-did-key-ingress-proxy": {
         "dependencies": [
-          "jsr:@publicdomainrelay/hono-factory-did-key-relay-relayer-xrpc@0"
+          "jsr:@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc@0"
         ]
       },
-      "hono-did-key-relay-subscriber": {
+      "hono-did-key-ingress-proxy-subscriber": {
         "dependencies": [
           "jsr:@hono/hono@*",
-          "jsr:@publicdomainrelay/did-key-relay-common@0",
-          "jsr:@publicdomainrelay/did-key-relay-subscriber-xrpc@0",
-          "jsr:@publicdomainrelay/hono-factory-did-key-relay-subscriber-xrpc@0",
+          "jsr:@publicdomainrelay/did-key-ingress-proxy-common@0",
+          "jsr:@publicdomainrelay/did-key-ingress-proxy-subscriber-xrpc@0",
+          "jsr:@publicdomainrelay/hono-factory-did-key-ingress-proxy-subscriber-xrpc@0",
           "npm:@atproto/api@*",
           "npm:@atproto/crypto@*",
           "npm:@atproto/identity@*"
         ]
       },
-      "hono-did-key-relay-tunnel": {
+      "hono-did-key-ingress-proxy-tunnel": {
         "dependencies": [
-          "jsr:@publicdomainrelay/did-key-relay-subscriber-xrpc@0"
+          "jsr:@publicdomainrelay/did-key-ingress-proxy-subscriber-xrpc@0"
         ]
       },
-      "hono-did-key-relay-tunnel-subscriber": {
+      "hono-did-key-ingress-proxy-tunnel-subscriber": {
         "dependencies": [
-          "jsr:@publicdomainrelay/did-key-relay-subscriber-xrpc@0",
+          "jsr:@publicdomainrelay/did-key-ingress-proxy-subscriber-xrpc@0",
           "npm:@atproto/crypto@0.5"
         ]
       },
-      "lib/abc/did-key-relay-relayer": {
+      "lib/abc/did-key-ingress-proxy": {
         "dependencies": [
-          "jsr:@publicdomainrelay/did-key-relay-common@0"
+          "jsr:@publicdomainrelay/did-key-ingress-proxy-common@0"
         ]
       },
-      "lib/abc/did-key-relay-subscriber": {
+      "lib/abc/did-key-ingress-proxy-subscriber": {
         "dependencies": [
-          "jsr:@publicdomainrelay/did-key-relay-common@0"
+          "jsr:@publicdomainrelay/did-key-ingress-proxy-common@0"
         ]
       },
-      "lib/did-key-relay-relayer-xrpc": {
+      "lib/did-key-ingress-proxy-subscriber-xrpc": {
         "dependencies": [
-          "jsr:@publicdomainrelay/did-key-relay-common@0",
-          "jsr:@publicdomainrelay/did-key-relay-relayer-abc@0",
-          "npm:@atproto/crypto@0.5"
-        ]
-      },
-      "lib/did-key-relay-subscriber-xrpc": {
-        "dependencies": [
-          "jsr:@publicdomainrelay/did-key-relay-common@0",
-          "jsr:@publicdomainrelay/did-key-relay-subscriber-abc@0",
+          "jsr:@publicdomainrelay/did-key-ingress-proxy-common@0",
+          "jsr:@publicdomainrelay/did-key-ingress-proxy-subscriber-abc@0",
           "jsr:@publicdomainrelay/logger@0"
         ]
       },
-      "lib/hono-factory-did-key-relay-relayer-xrpc": {
+      "lib/did-key-ingress-proxy-xrpc": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/did-key-ingress-proxy-abc@0",
+          "jsr:@publicdomainrelay/did-key-ingress-proxy-common@0",
+          "npm:@atproto/crypto@0.5"
+        ]
+      },
+      "lib/hono-factory-did-key-ingress-proxy-subscriber-xrpc": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/did-key-ingress-proxy-common@0",
+          "jsr:@publicdomainrelay/did-key-ingress-proxy-subscriber-xrpc@0"
+        ]
+      },
+      "lib/hono-factory-did-key-ingress-proxy-xrpc": {
         "dependencies": [
           "jsr:@hono/hono@*",
-          "jsr:@publicdomainrelay/did-key-relay-common@0",
-          "jsr:@publicdomainrelay/did-key-relay-relayer-abc@0",
-          "jsr:@publicdomainrelay/did-key-relay-relayer-xrpc@0",
+          "jsr:@publicdomainrelay/did-key-ingress-proxy-abc@0",
+          "jsr:@publicdomainrelay/did-key-ingress-proxy-common@0",
+          "jsr:@publicdomainrelay/did-key-ingress-proxy-xrpc@0",
           "jsr:@publicdomainrelay/logger@0"
-        ]
-      },
-      "lib/hono-factory-did-key-relay-subscriber-xrpc": {
-        "dependencies": [
-          "jsr:@publicdomainrelay/did-key-relay-common@0",
-          "jsr:@publicdomainrelay/did-key-relay-subscriber-xrpc@0"
         ]
       }
     },
@@ -271,7 +271,8 @@
       "jsr:@publicdomainrelay/atproto-oauth-fetch@0.0.0": {},
       "jsr:@publicdomainrelay/atproto-relay-abc@0.0.0": {
         "dependencies": [
-          "jsr:@publicdomainrelay/atproto-relay-common@0"
+          "jsr:@publicdomainrelay/atproto-relay-common@0",
+          "jsr:@publicdomainrelay/firehose-common@0"
         ]
       },
       "jsr:@publicdomainrelay/atproto-relay-common@0.0.0": {},
@@ -279,6 +280,7 @@
         "dependencies": [
           "jsr:@publicdomainrelay/atproto-relay-abc@0",
           "jsr:@publicdomainrelay/atproto-relay-common@0",
+          "jsr:@publicdomainrelay/backlog-sequencer@0",
           "jsr:@publicdomainrelay/event-bus@0.1",
           "jsr:@publicdomainrelay/logger@0"
         ]
@@ -286,6 +288,11 @@
       "jsr:@publicdomainrelay/atproto-repo-abc@0.0.0": {},
       "jsr:@publicdomainrelay/atproto-repo-common@0.0.0": {},
       "jsr:@publicdomainrelay/atproto-repo-deno@0.0.0": {},
+      "jsr:@publicdomainrelay/backlog-sequencer@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/event-bus@0.1"
+        ]
+      },
       "jsr:@publicdomainrelay/badge-blue-keys-abc@0.0.0": {},
       "jsr:@publicdomainrelay/badge-blue-keys-atproto@0.0.0": {},
       "jsr:@publicdomainrelay/badge-blue-keys-common@0.0.0": {},
@@ -314,6 +321,7 @@
           "jsr:@publicdomainrelay/cloud-init-common@0",
           "jsr:@publicdomainrelay/compute-contract-gateway-abc@0",
           "jsr:@publicdomainrelay/compute-contract-gateway-common@0",
+          "jsr:@publicdomainrelay/did-key-ingress-proxy@0",
           "jsr:@publicdomainrelay/did-plc@0",
           "jsr:@publicdomainrelay/hono-factory-atproto-repo-deno@0",
           "jsr:@publicdomainrelay/logger@0",
@@ -325,7 +333,6 @@
           "jsr:@publicdomainrelay/requester-abc@0",
           "jsr:@publicdomainrelay/requester-xrpc@0",
           "jsr:@publicdomainrelay/serve@0",
-          "jsr:@publicdomainrelay/xrpc-relay@0",
           "npm:@atproto/crypto@~0.4.4",
           "npm:@atproto/identity@0.5"
         ]
@@ -386,9 +393,27 @@
           "jsr:@publicdomainrelay/container-backend-common@0"
         ]
       },
+      "jsr:@publicdomainrelay/delegated-trust-badge-blue-keys@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/market-lexicons@0",
+          "jsr:@publicdomainrelay/trust-graph-abc@0"
+        ]
+      },
       "jsr:@publicdomainrelay/device-key-abc@0.0.0": {},
       "jsr:@publicdomainrelay/device-key-common@0.0.0": {},
       "jsr:@publicdomainrelay/device-key-webcrypto@0.0.0": {},
+      "jsr:@publicdomainrelay/did-key-ingress-proxy@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/atproto-repo-deno@0",
+          "jsr:@publicdomainrelay/did-key-ingress-proxy-common@0",
+          "jsr:@publicdomainrelay/did-key-ingress-proxy-subscriber-abc@0",
+          "jsr:@publicdomainrelay/did-key-ingress-proxy-subscriber-xrpc@0",
+          "jsr:@publicdomainrelay/hono-factory-did-key-ingress-proxy-subscriber-xrpc@0",
+          "jsr:@publicdomainrelay/hostname-helpers@0",
+          "jsr:@publicdomainrelay/logger@0",
+          "jsr:@publicdomainrelay/serve@0"
+        ]
+      },
       "jsr:@publicdomainrelay/did-plc@0.0.0": {
         "dependencies": [
           "npm:@ipld/dag-cbor@9",
@@ -397,6 +422,7 @@
       },
       "jsr:@publicdomainrelay/event-bus@0.1.0": {},
       "jsr:@publicdomainrelay/fedproxy-rbac-common@0.0.0": {},
+      "jsr:@publicdomainrelay/firehose-common@0.0.0": {},
       "jsr:@publicdomainrelay/firehose-watcher-abc@0.0.0": {
         "dependencies": [
           "jsr:@publicdomainrelay/logger@0"
@@ -409,6 +435,7 @@
       },
       "jsr:@publicdomainrelay/firehose-watcher-subscriberepos@0.0.0": {
         "dependencies": [
+          "jsr:@publicdomainrelay/firehose-common@0",
           "jsr:@publicdomainrelay/firehose-watcher-abc@0"
         ]
       },
@@ -423,6 +450,7 @@
           "jsr:@publicdomainrelay/atproto-relay-abc@0",
           "jsr:@publicdomainrelay/atproto-relay-common@0",
           "jsr:@publicdomainrelay/atproto-relay-xrpc@0",
+          "jsr:@publicdomainrelay/firehose-common@0",
           "jsr:@publicdomainrelay/hono-error-middleware@0.1",
           "jsr:@publicdomainrelay/hostname-helpers@0.1",
           "jsr:@publicdomainrelay/logger@0"
@@ -568,11 +596,23 @@
           "npm:@atproto/lex@~0.1.3"
         ]
       },
-      "jsr:@publicdomainrelay/market-policy-abc@0.0.0": {},
-      "jsr:@publicdomainrelay/market-policy-direct-network@0.0.0": {
+      "jsr:@publicdomainrelay/market-policy-abc@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/market-common@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/market-policy-direct-network-bsky-mutual@0.0.0": {
         "dependencies": [
           "jsr:@publicdomainrelay/market-lexicons@0",
-          "jsr:@publicdomainrelay/market-policy-abc@0"
+          "jsr:@publicdomainrelay/market-policy-abc@0",
+          "jsr:@publicdomainrelay/trust-graph-abc@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/market-policy-direct-network-tangled-vouch@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/market-lexicons@0",
+          "jsr:@publicdomainrelay/market-policy-abc@0",
+          "jsr:@publicdomainrelay/trust-graph-abc@0"
         ]
       },
       "jsr:@publicdomainrelay/market-policy-only-me@0.0.0": {
@@ -598,14 +638,13 @@
         "dependencies": [
           "jsr:@publicdomainrelay/market-lexicons@0",
           "jsr:@publicdomainrelay/market-policy-abc@0",
-          "jsr:@publicdomainrelay/market-policy-direct-network@0",
+          "jsr:@publicdomainrelay/market-policy-direct-network-bsky-mutual@0",
+          "jsr:@publicdomainrelay/market-policy-direct-network-tangled-vouch@0",
           "jsr:@publicdomainrelay/market-policy-only-me@0",
           "jsr:@publicdomainrelay/market-policy-remote@0",
           "jsr:@publicdomainrelay/market-policy-workflow-gha@0"
         ]
       },
-      "jsr:@publicdomainrelay/market-registry-abc@0.0.0": {},
-      "jsr:@publicdomainrelay/market-registry-atproto@0.0.0": {},
       "jsr:@publicdomainrelay/market-settlement-free@0.0.0": {},
       "jsr:@publicdomainrelay/market-settlement-x402@0.0.0": {},
       "jsr:@publicdomainrelay/oidc-issuer-abc@0.0.0": {
@@ -621,6 +660,12 @@
           "npm:hono@4",
           "npm:jose@5",
           "npm:yaml@^2.7.0"
+        ]
+      },
+      "jsr:@publicdomainrelay/operator-discovery-badge-blue-keys@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/market-lexicons@0",
+          "jsr:@publicdomainrelay/trust-graph-abc@0"
         ]
       },
       "jsr:@publicdomainrelay/package-store-abc@0.0.0": {},
@@ -669,6 +714,7 @@
           "jsr:@publicdomainrelay/atproto-repo-abc@0",
           "jsr:@publicdomainrelay/atproto-repo-deno@0",
           "jsr:@publicdomainrelay/cloud-init-common@0",
+          "jsr:@publicdomainrelay/did-key-ingress-proxy@0",
           "jsr:@publicdomainrelay/did-plc@0",
           "jsr:@publicdomainrelay/fedproxy-rbac-common@0",
           "jsr:@publicdomainrelay/hono-factory-atproto-repo-deno@0",
@@ -676,9 +722,10 @@
           "jsr:@publicdomainrelay/market-abc@0",
           "jsr:@publicdomainrelay/market-atproto@0",
           "jsr:@publicdomainrelay/market-common@0",
+          "jsr:@publicdomainrelay/market-lexicons@0",
           "jsr:@publicdomainrelay/requester-abc@0",
           "jsr:@publicdomainrelay/serve@0",
-          "jsr:@publicdomainrelay/xrpc-relay@0",
+          "jsr:@publicdomainrelay/trust-graph-tangled-graph@0",
           "npm:@atproto/common-web@0.5",
           "npm:@atproto/common@0.5",
           "npm:@atproto/crypto@~0.4.4",
@@ -712,17 +759,22 @@
           "jsr:@publicdomainrelay/logger@0"
         ]
       },
-      "jsr:@publicdomainrelay/utils-attestation-key@0.0.0": {},
-      "jsr:@publicdomainrelay/xrpc-relay@0.0.0": {
+      "jsr:@publicdomainrelay/trust-graph-abc@0.0.0": {},
+      "jsr:@publicdomainrelay/trust-graph-bsky-mutuals@0.0.0": {
         "dependencies": [
-          "jsr:@publicdomainrelay/atproto-repo-deno@0",
-          "jsr:@publicdomainrelay/did-key-relay-common@0",
-          "jsr:@publicdomainrelay/did-key-relay-subscriber-abc@0",
-          "jsr:@publicdomainrelay/did-key-relay-subscriber-xrpc@0",
-          "jsr:@publicdomainrelay/hono-factory-did-key-relay-subscriber-xrpc@0",
-          "jsr:@publicdomainrelay/hostname-helpers@0",
-          "jsr:@publicdomainrelay/logger@0",
-          "jsr:@publicdomainrelay/serve@0"
+          "jsr:@publicdomainrelay/trust-graph-abc@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/trust-graph-tangled-graph@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/market-common@0",
+          "jsr:@publicdomainrelay/trust-graph-abc@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/utils-attestation-key@0.0.0": {},
+      "jsr:@publicdomainrelay/ws-reconnect@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/logger@0"
         ]
       }
     }

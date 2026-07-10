@@ -1,0 +1,60 @@
+{
+  "name": "hono-did-key-ingress-proxy",
+  "description": "XRPC relay server",
+  "options": {
+    "hostname": {
+      "type": "string",
+      "description": "Server hostname for DID doc and proxy refs",
+      "env": "HOSTNAME",
+      "default": "xrpc.fedproxy.com"
+    },
+    "service-id": {
+      "type": "string",
+      "description": "Service ID in the DID document",
+      "env": "SERVICE_ID",
+      "default": "xrpc_relay"
+    },
+    "port": {
+      "type": "number",
+      "description": "TCP port to listen on",
+      "env": "PORT",
+      "default": 8080
+    },
+    "unix-socket": {
+      "type": "string",
+      "description": "Unix socket path (takes precedence over --port)",
+      "env": "UNIX_SOCKET",
+      "default": ""
+    },
+    "relay-timeout-ms": {
+      "type": "number",
+      "description": "Timeout for relay operations",
+      "env": "RELAY_TIMEOUT_MS",
+      "default": 30000
+    },
+    "reconnect-grace-ms": {
+      "type": "number",
+      "description": "Grace period for reconnect",
+      "env": "RECONNECT_GRACE_MS",
+      "default": 10000
+    },
+    "nonce-ttl-ms": {
+      "type": "number",
+      "description": "TTL for nonces",
+      "env": "NONCE_TTL_MS",
+      "default": 60000
+    },
+    "additional-hosts": {
+      "type": "string",
+      "description": "Comma-separated extra hostnames accepted on control endpoints. \"*\" allows all.",
+      "env": "ADDITIONAL_HOSTS",
+      "default": ""
+    },
+    "allowed-dids": {
+      "type": "string",
+      "description": "Comma-separated DIDs allowed to register. Empty = allow all.",
+      "env": "ALLOWED_DIDS",
+      "default": ""
+    }
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "ingress-proxy-host": "xrpc.fedproxy.com",
+  "atproto-pds": "https://bsky.social"
+}

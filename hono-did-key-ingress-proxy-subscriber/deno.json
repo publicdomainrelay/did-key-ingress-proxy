@@ -1,0 +1,17 @@
+{
+  "version": "0.0.0",
+  "license": "Unlicense",
+  "imports": {
+    "@hono/hono": "jsr:@hono/hono",
+    "@hono/hono/cors": "jsr:@hono/hono/cors",
+    "@atproto/crypto": "npm:@atproto/crypto",
+    "@atproto/api": "npm:@atproto/api",
+    "@atproto/identity": "npm:@atproto/identity",
+    "@publicdomainrelay/did-key-ingress-proxy-common": "jsr:@publicdomainrelay/did-key-ingress-proxy-common@^0",
+    "@publicdomainrelay/did-key-ingress-proxy-subscriber-xrpc": "jsr:@publicdomainrelay/did-key-ingress-proxy-subscriber-xrpc@^0",
+    "@publicdomainrelay/hono-factory-did-key-ingress-proxy-subscriber-xrpc": "jsr:@publicdomainrelay/hono-factory-did-key-ingress-proxy-subscriber-xrpc@^0"
+  },
+  "compile": {
+    "include": ["cli-args-env.json", "config.json"]
+  }
+}

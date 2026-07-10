@@ -4,7 +4,7 @@
   "defs": {
     "main": {
       "type": "subscription",
-      "description": "Open a relay channel. The subscriber presents a com.fedproxy.temp.xrpc.registration: a record signed (network.attested.signature) over the nonce previously issued by com.fedproxy.temp.xrpc.getRegistrationNonce. The relay verifies the registration's signatures against the issued nonce and the did:key, then binds the WebSocket to that key. On connect the relay sends a #registered frame with the assigned serviceId/proxyRef; subsequent #request frames carry inbound XRPC calls the subscriber answers with #response frames.",
+      "description": "Open a relay channel. The subscriber presents a com.fedproxy.temp.xrpc.registration: a record signed (network.attested.signature) over the nonce previously issued by com.fedproxy.temp.xrpc.getRegistrationNonce. The relay verifies the registration's signatures against the issued nonce and the did:key, then binds the WebSocket to that key. On connect the relay sends a #registered frame with the assigned serviceId/ingressRef; subsequent #request frames carry inbound XRPC calls the subscriber answers with #response frames.",
       "parameters": {
         "type": "params",
         "required": ["registration"],
@@ -33,13 +33,13 @@
     "registered": {
       "type": "object",
       "description": "First frame sent by the relay on connect, assigning this subscriber a serviceId.",
-      "required": ["serviceId", "proxyRef"],
+      "required": ["serviceId", "ingressRef"],
       "properties": {
         "serviceId": {
           "type": "string",
           "description": "Opaque id the relay assigns to this subscriber for the connection lifetime."
         },
-        "proxyRef": {
+        "ingressRef": {
           "type": "string",
           "description": "did:web:HOST#serviceId value callers pass as the atproto-proxy header to route XRPC calls to this subscriber."
         }

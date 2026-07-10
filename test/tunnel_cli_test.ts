@@ -2,8 +2,8 @@
 // container, no Deno API shortcuts), proving the entrypoints work end to end.
 //
 //   in-process relay  +  local TCP echo
-//   subprocess: hono-did-key-relay-tunnel-subscriber (the in-VM agent)
-//   subprocess: hono-did-key-relay-tunnel           (the ssh ProxyCommand)
+//   subprocess: hono-did-key-ingress-proxy-tunnel-subscriber (the in-VM agent)
+//   subprocess: hono-did-key-ingress-proxy-tunnel           (the ssh ProxyCommand)
 //
 // Bytes written to the tunnel-client's stdin come back on its stdout, having
 // ridden the relay to the subscriber's tunnelTarget (the echo server) and back.
@@ -12,12 +12,12 @@
 
 import { assertEquals } from "@std/assert";
 import { Secp256k1Keypair } from "@atproto/crypto";
-import { didToSubdomain } from "@publicdomainrelay/did-key-relay-common";
-import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-relay-relayer-xrpc";
+import { didToSubdomain } from "@publicdomainrelay/did-key-ingress-proxy-common";
+import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
 
 const HERE = new URL(".", import.meta.url).pathname;
-const TUNNEL_CLIENT_MOD = `${HERE}../hono-did-key-relay-tunnel/mod.ts`;
-const AGENT_MOD = `${HERE}../hono-did-key-relay-tunnel-subscriber/mod.ts`;
+const TUNNEL_CLIENT_MOD = `${HERE}../hono-did-key-ingress-proxy-tunnel/mod.ts`;
+const AGENT_MOD = `${HERE}../hono-did-key-ingress-proxy-tunnel-subscriber/mod.ts`;
 
 function concat(chunks: Uint8Array[]): Uint8Array {
   const total = chunks.reduce((n, c) => n + c.length, 0);
@@ -86,7 +86,7 @@ Deno.test({
     const { promise: portReady, resolve: resolvePort } = Promise.withResolvers<number>();
     Deno.serve({ port: 0, hostname: "127.0.0.1", signal: relayCtl.signal, onListen: (addr) => resolvePort((addr as Deno.NetAddr).port) }, relayApp.fetch);
     const dispPort = await portReady;
-    const dispatcherHost = `localhost:${dispPort}`;
+    const ingressProxyHost = `localhost:${dispPort}`;
     cleanups.push(() => relayCtl.abort());
 
     const echo = startCaseFlipEchoServer();
@@ -100,7 +100,7 @@ Deno.test({
     const agent = new Deno.Command("deno", {
       args: [
         "run", "-A", AGENT_MOD,
-        "--dispatcher-host", dispatcherHost,
+        "--ingress-proxy-host", ingressProxyHost,
         "--aud-host", "localhost",
         "--private-key-hex", privateKeyHex,
         "--target-host", "127.0.0.1",
@@ -117,7 +117,7 @@ Deno.test({
     const client = new Deno.Command("deno", {
       args: [
         "run", "-A", TUNNEL_CLIENT_MOD,
-        "--dispatcher-host", dispatcherHost,
+        "--ingress-proxy-host", ingressProxyHost,
         "--subdomain", subdomain,
       ],
       stdin: "piped", stdout: "piped", stderr: "null",

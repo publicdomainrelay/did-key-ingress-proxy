@@ -1,7 +1,0 @@
-{
-  "version": "0.0.0",
-  "license": "Unlicense",
-  "imports": {
-    "@publicdomainrelay/did-key-relay-subscriber-xrpc": "jsr:@publicdomainrelay/did-key-relay-subscriber-xrpc@^0"
-  }
-}

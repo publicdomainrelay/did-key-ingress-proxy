@@ -1,4 +1,4 @@
-// Hermetic full-duplex tunnel test for the did-key-relay binary tunnel
+// Hermetic full-duplex tunnel test for the xrpc-dispatcher binary tunnel
 // primitive: caller (tunnelOverRelay) -> relay -> subscriber (tunnelTarget)
 // -> a local TCP echo server, and the echoed bytes back again.
 //
@@ -10,8 +10,8 @@
 
 import { assertEquals } from "@std/assert";
 import { Secp256k1Keypair } from "@atproto/crypto";
-import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-relay-relayer-xrpc";
-import { createSubscriber, tunnelOverRelay } from "@publicdomainrelay/did-key-relay-subscriber-xrpc";
+import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
+import { createSubscriber, tunnelOverRelay } from "@publicdomainrelay/did-key-ingress-proxy-subscriber-xrpc";
 
 function b64url(obj: unknown): string {
   return btoa(JSON.stringify(obj)).replace(/=+$/, "").replace(/\+/g, "-").replace(/\//g, "_");
@@ -66,7 +66,7 @@ Deno.test({
     const { promise: portReady, resolve: resolvePort } = Promise.withResolvers<number>();
     Deno.serve({ port: 0, hostname: "127.0.0.1", signal: relayCtl.signal, onListen: (addr) => resolvePort((addr as Deno.NetAddr).port) }, relayApp.fetch);
     const dispPort = await portReady;
-    const dispatcherHost = `localhost:${dispPort}`;
+    const ingressProxyHost = `localhost:${dispPort}`;
     cleanups.push(() => relayCtl.abort());
 
     const echo = startCaseFlipEchoServer();
@@ -84,7 +84,7 @@ Deno.test({
       label: "tunnel-sub",
       keypair,
       getServiceAuthToken,
-      dispatcherHost,
+      ingressProxyHost,
       tunnelTarget: { hostname: "127.0.0.1", port: echo.port },
     });
     cleanups.push(() => { try { sub.ws.close(); } catch { /* ok */ } });
@@ -110,7 +110,7 @@ Deno.test({
       },
     });
 
-    const tunnelDone = tunnelOverRelay({ dispatcherHost, subscriberSubdomain: sub.subdomain, readable, writable });
+    const tunnelDone = tunnelOverRelay({ ingressProxyHost, subscriberSubdomain: sub.subdomain, readable, writable });
 
     // Send a large payload of mixed-case ASCII; expect it back case-flipped.
     const payload = new Uint8Array(expectedLen);

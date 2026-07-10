@@ -1,0 +1,10 @@
+{
+  "name": "@publicdomainrelay/hono-did-key-ingress-proxy-tunnel-subscriber",
+  "version": "0.0.0",
+  "license": "Unlicense",
+  "exports": "./mod.ts",
+  "imports": {
+    "@atproto/crypto": "npm:@atproto/crypto@^0.5.0",
+    "@publicdomainrelay/did-key-ingress-proxy-subscriber-xrpc": "jsr:@publicdomainrelay/did-key-ingress-proxy-subscriber-xrpc@^0"
+  }
+}

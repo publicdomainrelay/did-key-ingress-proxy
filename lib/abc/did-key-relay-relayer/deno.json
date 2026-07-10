@@ -1,9 +1,0 @@
-{
-  "name": "@publicdomainrelay/did-key-relay-relayer-abc",
-  "version": "0.0.0",
-  "license": "Unlicense",
-  "exports": "./mod.ts",
-  "imports": {
-    "@publicdomainrelay/did-key-relay-common": "jsr:@publicdomainrelay/did-key-relay-common@^0"
-  }
-}

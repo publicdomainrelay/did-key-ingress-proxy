@@ -1,0 +1,11 @@
+{
+  "name": "@publicdomainrelay/did-key-ingress-proxy-xrpc",
+  "version": "0.0.0",
+  "license": "Unlicense",
+  "exports": "./mod.ts",
+  "imports": {
+    "@publicdomainrelay/did-key-ingress-proxy-common": "jsr:@publicdomainrelay/did-key-ingress-proxy-common@^0",
+    "@publicdomainrelay/did-key-ingress-proxy-abc": "jsr:@publicdomainrelay/did-key-ingress-proxy-abc@^0",
+    "@atproto/crypto": "npm:@atproto/crypto@^0.5.0"
+  }
+}

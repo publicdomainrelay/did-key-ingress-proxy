@@ -1,17 +1,17 @@
 {
   "nodeModulesDir": "auto",
   "workspace": [
-    "./lib/common/did-key-relay",
-    "./lib/abc/did-key-relay-relayer",
-    "./lib/abc/did-key-relay-subscriber",
-    "./lib/did-key-relay-relayer-xrpc",
-    "./lib/did-key-relay-subscriber-xrpc",
-    "./lib/hono-factory-did-key-relay-relayer-xrpc",
-    "./lib/hono-factory-did-key-relay-subscriber-xrpc",
-    "./hono-did-key-relay-relayer",
-    "./hono-did-key-relay-subscriber",
-    "./hono-did-key-relay-tunnel",
-    "./hono-did-key-relay-tunnel-subscriber"
+    "./lib/common/did-key-ingress-proxy",
+    "./lib/abc/did-key-ingress-proxy",
+    "./lib/abc/did-key-ingress-proxy-subscriber",
+    "./lib/did-key-ingress-proxy-xrpc",
+    "./lib/did-key-ingress-proxy-subscriber-xrpc",
+    "./lib/hono-factory-did-key-ingress-proxy-xrpc",
+    "./lib/hono-factory-did-key-ingress-proxy-subscriber-xrpc",
+    "./hono-did-key-ingress-proxy",
+    "./hono-did-key-ingress-proxy-subscriber",
+    "./hono-did-key-ingress-proxy-tunnel",
+    "./hono-did-key-ingress-proxy-tunnel-subscriber"
   ],
   "allowScripts": ["npm:@parcel/watcher@2.5.6", "npm:core-js@3.49.0", "npm:node-pty@1.1.0"],
   "imports": {

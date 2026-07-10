@@ -1,0 +1,7 @@
+{
+  "version": "0.0.0",
+  "license": "Unlicense",
+  "imports": {
+    "@publicdomainrelay/did-key-ingress-proxy-subscriber-xrpc": "jsr:@publicdomainrelay/did-key-ingress-proxy-subscriber-xrpc@^0"
+  }
+}

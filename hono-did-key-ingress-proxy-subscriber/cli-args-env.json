@@ -1,0 +1,45 @@
+{
+  "name": "hono-did-key-ingress-proxy-subscriber",
+  "description": "XRPC relay subscriber client",
+  "options": {
+    "save-keypair": {
+      "type": "boolean",
+      "description": "Persist generated keypair to disk"
+    },
+    "load-keypair": {
+      "type": "boolean",
+      "description": "Load existing keypair from disk instead of generating"
+    },
+    "keypair-path": {
+      "type": "string",
+      "description": "Path to keypair file",
+      "default": "./keypair.json"
+    },
+    "ingress-proxy-host": {
+      "type": "string",
+      "description": "Relay dispatcher hostname",
+      "env": "INGRESS_PROXY_HOST",
+      "default": "xrpc.fedproxy.com"
+    },
+    "atproto-pds": {
+      "type": "string",
+      "description": "AT Protocol PDS URL",
+      "env": "ATPROTO_PDS",
+      "default": "https://bsky.social"
+    },
+    "atproto-handle": {
+      "type": "string",
+      "description": "AT Protocol handle for login",
+      "env": "ATPROTO_HANDLE"
+    },
+    "atproto-password": {
+      "type": "string",
+      "description": "AT Protocol password for login",
+      "env": "ATPROTO_PASSWORD"
+    },
+    "write-proxy-ref-http-to-path": {
+      "type": "string",
+      "description": "Write proxy ref HTTPS URL to file"
+    }
+  }
+}

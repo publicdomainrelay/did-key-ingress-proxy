@@ -1,0 +1,10 @@
+{
+  "version": "0.0.0",
+  "license": "Unlicense",
+  "imports": {
+    "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc": "jsr:@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc@^0"
+  },
+  "compile": {
+    "include": ["cli-args-env.json", "config.json"]
+  }
+}
