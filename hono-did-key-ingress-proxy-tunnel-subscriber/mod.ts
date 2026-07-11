@@ -35,14 +35,14 @@ if (!ingressProxyHost || !audHost || !privateKeyHex) {
 const keypair = await Secp256k1Keypair.import(privateKeyHex);
 const did = keypair.did();
 
-// The relay verifies the registration nonce signature with this keypair (real
-// crypto); the service-auth JWT itself is claims-only, so aud/lxm/exp suffice.
-const getServiceAuthToken = (nsid: string): Promise<string> =>
-  Promise.resolve(
-    `${b64url({ alg: "ES256K", typ: "JWT" })}.${
-      b64url({ iss: did, aud: `did:web:${audHost}`, lxm: nsid, exp: Math.floor(Date.now() / 1000) + 600 })
-    }.x`,
-  );
+const getServiceAuthToken = async (nsid: string): Promise<string> => {
+  const header = b64url({ alg: "ES256K", typ: "JWT" });
+  const payload = b64url({ iss: did, aud: `did:web:${audHost}`, lxm: nsid, exp: Math.floor(Date.now() / 1000) + 600 });
+  const signingInput = `${header}.${payload}`;
+  const sigBytes = await keypair.sign(new TextEncoder().encode(signingInput));
+  const sig = btoa(String.fromCharCode(...sigBytes)).replace(/=+$/, "").replace(/\+/g, "-").replace(/\//g, "_");
+  return `${signingInput}.${sig}`;
+};
 
 const sub = await createSubscriber({
   label: "vm-tunnel",
