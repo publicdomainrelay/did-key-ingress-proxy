@@ -47,6 +47,11 @@ export interface RelayFactoryOptions {
    * Empty (default) means any DID with a valid registration is accepted.
    */
   allowedDids?: string[];
+  /**
+   * Resolve a non-did:key DID (e.g. did:plc) to its atproto signing key
+   * (a did:key string). When omitted, only did:key DIDs are accepted.
+   */
+  resolveDidKey?: (did: string) => Promise<string>;
 }
 
 export function createRelayFactory(opts: RelayFactoryOptions) {
@@ -67,7 +72,7 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
     onSendFrame: (ws, frame) => { ws.send(frame); },
     onCloseConnection: (ws, code, reason) => { ws.close(code, reason); },
   });
-  const nonceStore = createNonceStore(nonceTtlMs);
+  const nonceStore = createNonceStore({ ttlMs: nonceTtlMs, resolveDidKey: opts.resolveDidKey });
 
   return createFactory({
     initApp: (app) => {
@@ -113,8 +118,8 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
         }
         let input: { key?: string };
         try { input = await c.req.json(); } catch { input = {}; }
-        if (!input.key || typeof input.key !== "string" || !input.key.startsWith("did:key:")) {
-          return c.json({ error: "InvalidRequest", message: "key must be a did:key" }, 400);
+        if (!input.key || typeof input.key !== "string" || !input.key.startsWith("did:")) {
+          return c.json({ error: "InvalidRequest", message: "key must be a DID" }, 400);
         }
         const nonce = nonceStore.issue(input.key);
         log.info("nonce_issued", { component: "relay", key: input.key });
@@ -130,9 +135,9 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
         return {
           async onOpen(_evt, ws) {
             const raw = ws.raw as WebSocket;
-            if (!clientDid.startsWith("did:key:")) {
+            if (!clientDid.startsWith("did:")) {
               log.warn("missing_did", { component: "relay" });
-              raw.close(1008, "did query param must be a did:key");
+              raw.close(1008, "did query param must be a DID");
               return;
             }
             let reg: { key?: string; nonce?: string; signatures?: Array<{ key?: string; signature?: string }> };

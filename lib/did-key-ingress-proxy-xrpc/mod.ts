@@ -9,7 +9,14 @@ interface NonceEntry {
   expiresAt: number;
 }
 
-export function createNonceStore(ttlMs: number): NonceStore {
+export interface NonceStoreOpts {
+  ttlMs: number;
+  /** Resolve a non-did:key DID to its atproto signing key (did:key). */
+  resolveDidKey?: (did: string) => Promise<string>;
+}
+
+export function createNonceStore(opts: NonceStoreOpts): NonceStore {
+  const { ttlMs, resolveDidKey } = opts;
   const entries = new Map<string, NonceEntry>();
 
   const purgeInterval = setInterval(() => {
@@ -81,7 +88,12 @@ export function createNonceStore(ttlMs: number): NonceStore {
       for (const sig of sigs) {
         if (!sig?.key || !sig?.signature) continue;
         try {
-          if (await verifySignature(sig.key, nonceBytes, decodeBase64(sig.signature))) {
+          // did:key → verify directly. did:plc etc → resolve via callback → verify.
+          const keyDid = sig.key.startsWith("did:key:")
+            ? sig.key
+            : resolveDidKey ? await resolveDidKey(sig.key).catch(() => null) : null;
+          if (!keyDid) continue;
+          if (await verifySignature(keyDid, nonceBytes, decodeBase64(sig.signature))) {
             sigVerified = true;
             break;
           }
