@@ -2,6 +2,7 @@
   "nodeModulesDir": "auto",
   "workspace": [
     "./lib/common/did-key-ingress-proxy",
+    "./lib/common/tunnel-subscriber-common",
     "./lib/abc/did-key-ingress-proxy",
     "./lib/abc/did-key-ingress-proxy-subscriber",
     "./lib/did-key-ingress-proxy-xrpc",
