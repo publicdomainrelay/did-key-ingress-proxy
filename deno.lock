@@ -259,6 +259,37 @@
           "npm:multiformats@^13.3.0"
         ]
       },
+      "jsr:@publicdomainrelay/atproto-event-stream-abc@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/atproto-event-stream-common@0",
+          "jsr:@publicdomainrelay/logger@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/atproto-event-stream-common@0.0.0": {},
+      "jsr:@publicdomainrelay/atproto-event-stream-jetstream@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/atproto-event-stream-abc@0",
+          "jsr:@publicdomainrelay/atproto-event-stream-common@0",
+          "jsr:@publicdomainrelay/firehose-watcher-jetstream@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/atproto-event-stream-relay@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/atproto-event-stream-abc@0",
+          "jsr:@publicdomainrelay/atproto-event-stream-common@0",
+          "jsr:@publicdomainrelay/firehose-watcher-abc@0",
+          "jsr:@publicdomainrelay/firehose-watcher-subscriberepos@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/atproto-event-streams-client@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/atproto-event-stream-abc@0",
+          "jsr:@publicdomainrelay/atproto-event-stream-common@0",
+          "jsr:@publicdomainrelay/atproto-event-stream-jetstream@0",
+          "jsr:@publicdomainrelay/atproto-event-stream-relay@0",
+          "jsr:@publicdomainrelay/logger@0"
+        ]
+      },
       "jsr:@publicdomainrelay/atproto-helpers@0.0.0": {
         "dependencies": [
           "npm:@atproto/api@~0.20.8",
@@ -269,6 +300,12 @@
       "jsr:@publicdomainrelay/atproto-oauth-abc@0.0.0": {},
       "jsr:@publicdomainrelay/atproto-oauth-common@0.0.0": {},
       "jsr:@publicdomainrelay/atproto-oauth-fetch@0.0.0": {},
+      "jsr:@publicdomainrelay/atproto-oauth-helpers@0.0.0": {
+        "dependencies": [
+          "npm:@atproto/jwk@~0.7.2",
+          "npm:@atproto/oauth-client@~0.7.5"
+        ]
+      },
       "jsr:@publicdomainrelay/atproto-relay-abc@0.0.0": {
         "dependencies": [
           "jsr:@publicdomainrelay/atproto-relay-common@0",
