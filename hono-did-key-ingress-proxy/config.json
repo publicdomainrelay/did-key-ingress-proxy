@@ -1,5 +1,4 @@
 {
-  "hostname": "xrpc.fedproxy.com",
   "service-id": "xrpc_relay",
   "port": 8080,
   "unix-socket": "",

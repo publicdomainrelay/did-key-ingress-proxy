@@ -5,8 +5,7 @@
     "hostname": {
       "type": "string",
       "description": "Server hostname for DID doc and proxy refs",
-      "env": "HOSTNAME",
-      "default": "xrpc.fedproxy.com"
+      "env": "HOSTNAME"
     },
     "service-id": {
       "type": "string",

@@ -18,8 +18,7 @@
     "ingress-proxy-host": {
       "type": "string",
       "description": "Relay dispatcher hostname",
-      "env": "INGRESS_PROXY_HOST",
-      "default": "xrpc.fedproxy.com"
+      "env": "INGRESS_PROXY_HOST"
     },
     "atproto-pds": {
       "type": "string",
