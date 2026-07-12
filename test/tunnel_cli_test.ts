@@ -14,6 +14,7 @@ import { assertEquals } from "@std/assert";
 import { Secp256k1Keypair } from "@atproto/crypto";
 import { didToSubdomain } from "@publicdomainrelay/did-key-ingress-proxy-common";
 import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
+import { parseOpenSshEd25519Pem, deriveSecp256k1FromSeed } from "@publicdomainrelay/tunnel-subscriber-common";
 
 const HERE = new URL(".", import.meta.url).pathname;
 const TUNNEL_CLIENT_MOD = `${HERE}../hono-did-key-ingress-proxy-tunnel/mod.ts`;
@@ -92,8 +93,21 @@ Deno.test({
     const echo = startCaseFlipEchoServer();
     cleanups.push(() => echo.close());
 
-    const keypair = await Secp256k1Keypair.create({ exportable: true });
-    const privateKeyHex = Array.from(await keypair.export()).map((b) => b.toString(16).padStart(2, "0")).join("");
+    // Generate temporary SSH ed25519 host key — the tunnel subscriber CLI reads
+    // this and derives a secp256k1 keypair from the ed25519 seed.
+    const tempDir = await Deno.makeTempDir({ prefix: "tunnel-cli-test-" });
+    cleanups.push(() => { try { Deno.remove(tempDir, { recursive: true }); } catch { /* ok */ } });
+    const sshKeyPath = `${tempDir}/ssh_host_ed25519_key`;
+    await new Deno.Command("ssh-keygen", {
+      args: ["-t", "ed25519", "-f", sshKeyPath, "-N", "", "-q"],
+    }).output();
+
+    // Derive the SAME secp256k1 keypair the CLI will produce, so our
+    // subdomain prediction matches.
+    const pem = await Deno.readTextFile(sshKeyPath);
+    const ed25519Seed = parseOpenSshEd25519Pem(pem);
+    const secp256k1Bytes = await deriveSecp256k1FromSeed(ed25519Seed);
+    const keypair = await Secp256k1Keypair.import(secp256k1Bytes);
     const subdomain = didToSubdomain(keypair.did());
 
     // ── subprocess 1: the in-VM agent CLI ────────────────────────────────
@@ -102,7 +116,7 @@ Deno.test({
         "run", "-A", AGENT_MOD,
         "--ingress-proxy-host", ingressProxyHost,
         "--aud-host", "localhost",
-        "--private-key-hex", privateKeyHex,
+        "--private-key-from-sshd-host-key", sshKeyPath,
         "--target-host", "127.0.0.1",
         "--target-port", String(echo.port),
       ],
