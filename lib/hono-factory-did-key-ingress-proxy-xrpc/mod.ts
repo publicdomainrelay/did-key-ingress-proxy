@@ -80,7 +80,7 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
 
       app.get("/.well-known/did.json", (c, next) => {
         const host = hostnameOnly(c.req.header("host") ?? hostname);
-        if (host !== hostname) return next();
+        if (host !== hostname && !additionalHosts.includes(host)) return next();
         return c.json({
           "@context": ["https://www.w3.org/ns/did/v1"],
           id: `did:web:${hostname}`,
@@ -317,8 +317,11 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
 
       app.all("*", async (c) => {
         const rawHost = hostnameOnly(c.req.header("host") ?? hostname);
-        const baseDot = `.${hostname}`;
-        if (!rawHost.endsWith(baseDot)) return c.notFound();
+        const dataHosts = [hostname, ...additionalHosts];
+        const hostMatch = dataHosts.some((h) => rawHost.endsWith(`.${h}`));
+        if (!hostMatch) return c.notFound();
+
+        const baseDot = `.${dataHosts.find((h) => rawHost.endsWith(`.${h}`))!}`;
 
         const subdomain = rawHost.slice(0, rawHost.length - baseDot.length);
         const path = new URL(c.req.url).pathname;
