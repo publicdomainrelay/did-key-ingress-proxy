@@ -136,7 +136,7 @@ export async function deriveSecp256k1FromSeed(seed: Uint8Array): Promise<Uint8Ar
   // Import the seed as HKDF key material
   const ikm = await crypto.subtle.importKey(
     "raw",
-    seed,
+    Uint8Array.from(seed),
     { name: "HKDF" },
     false,
     ["deriveBits"],
