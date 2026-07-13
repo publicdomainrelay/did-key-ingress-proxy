@@ -8,6 +8,12 @@ export interface SubscriberOptions {
   };
   getServiceAuthToken: (nsid: string) => Promise<string>;
   ingressProxyHost: string;
+  /**
+   * Force https/wss to the ingress proxy even for localhost/hosts-with-port
+   * (which otherwise default to plaintext for local dev). Set when the local
+   * dispatcher serves TLS with a self-signed cert (trust via DENO_CERT).
+   */
+  tls?: boolean;
   synthetic?: boolean;
   handleRequest?: (
     req: RelayRequest,

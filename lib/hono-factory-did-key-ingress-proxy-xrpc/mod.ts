@@ -59,6 +59,9 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
   const additionalHosts = opts.additionalHosts ?? [];
   const allowAllHosts = additionalHosts.includes("*");
   const allowedDids = opts.allowedDids ?? [];
+  // HTTP/2 requests carry :authority instead of a Host header; Deno exposes
+  // the authority via the request URL, so fall back to that before assuming
+  // the configured hostname.
   const isControlHost = (host: string): boolean =>
     allowAllHosts || host === hostname || additionalHosts.includes(host);
   const serviceId = opts.serviceId ?? "xrpc_relay";
@@ -79,7 +82,7 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
       app.use("*", cors());
 
       app.get("/.well-known/did.json", (c, next) => {
-        const host = hostnameOnly(c.req.header("host") ?? hostname);
+        const host = hostnameOnly(c.req.header("host") ?? new URL(c.req.url).host);
         if (host !== hostname && !additionalHosts.includes(host)) return next();
         return c.json({
           "@context": ["https://www.w3.org/ns/did/v1"],
@@ -109,7 +112,7 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
       });
 
       app.post(`/xrpc/${GET_NONCE_NSID}`, async (c, next) => {
-        if (!isControlHost(hostnameOnly(c.req.header("host") ?? hostname))) return next();
+        if (!isControlHost(hostnameOnly(c.req.header("host") ?? new URL(c.req.url).host))) return next();
         try {
           await verifyServiceAuth(c.req.header("Authorization"), hostnameToDid(hostname), GET_NONCE_NSID);
         } catch (err) {
@@ -127,7 +130,7 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
       });
 
       const wsSubscribeHandler = upgradeWebSocket((c) => {
-        const serviceHost = hostnameOnly(c.req.header("host") ?? hostname);
+        const serviceHost = hostnameOnly(c.req.header("host") ?? new URL(c.req.url).host);
         const registrationParam = c.req.query("registration") ?? "";
         const clientDid = c.req.query("did") ?? "";
         const subdomain = didToSubdomain(clientDid);
@@ -234,7 +237,7 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
       });
 
       app.get(`/xrpc/${SUBSCRIBE_NSID}`, async (c, next) => {
-        if (!isControlHost(hostnameOnly(c.req.header("host") ?? hostname))) return next();
+        if (!isControlHost(hostnameOnly(c.req.header("host") ?? new URL(c.req.url).host))) return next();
         try {
           const serviceAuth = c.req.query("service_auth");
           await verifyServiceAuth(c.req.header("Authorization"), hostnameToDid(hostname), SUBSCRIBE_NSID, serviceAuth);
@@ -246,7 +249,7 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
       });
 
       const wsRelaySubscriptionHandler = upgradeWebSocket((c) => {
-        const host = hostnameOnly(c.req.header("host") ?? hostname);
+        const host = hostnameOnly(c.req.header("host") ?? new URL(c.req.url).host);
         const subdomain = host.slice(0, -`.${hostname}`.length);
         const path = new URL(c.req.url).pathname;
         const nsid = path.startsWith("/xrpc/") ? path.slice("/xrpc/".length) : path;
@@ -309,14 +312,14 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
       });
 
       app.get("/xrpc/*", async (c, next) => {
-        const host = hostnameOnly(c.req.header("host") ?? hostname);
+        const host = hostnameOnly(c.req.header("host") ?? new URL(c.req.url).host);
         if (!host.endsWith(`.${hostname}`)) return next();
         if (c.req.header("upgrade")?.toLowerCase() !== "websocket") return next();
         return wsRelaySubscriptionHandler(c, next);
       });
 
       app.all("*", async (c) => {
-        const rawHost = hostnameOnly(c.req.header("host") ?? hostname);
+        const rawHost = hostnameOnly(c.req.header("host") ?? new URL(c.req.url).host);
         const dataHosts = [hostname, ...additionalHosts];
         const hostMatch = dataHosts.some((h) => rawHost.endsWith(`.${h}`));
         if (!hostMatch) return c.notFound();

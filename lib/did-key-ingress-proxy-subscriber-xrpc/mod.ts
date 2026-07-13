@@ -40,13 +40,13 @@ async function writeAll(conn: Deno.Conn, data: Uint8Array): Promise<void> {
   while (off < data.length) off += await conn.write(data.subarray(off));
 }
 
-function httpOrigin(host: string): string {
-  if (host.includes(":") || host === "localhost") return `http://${host}`;
+function httpOrigin(host: string, tls?: boolean): string {
+  if (!tls && (host.includes(":") || host === "localhost")) return `http://${host}`;
   return `https://${host}`;
 }
 
-function wsOrigin(host: string): string {
-  if (host.includes(":") || host === "localhost") return `ws://${host}`;
+function wsOrigin(host: string, tls?: boolean): string {
+  if (!tls && (host.includes(":") || host === "localhost")) return `ws://${host}`;
   return `wss://${host}`;
 }
 
@@ -353,7 +353,7 @@ export async function createSubscriber(
   function openOnce(): Promise<void> {
     return (async () => {
       const nonceToken = await opts.getServiceAuthToken(GET_NONCE_NSID);
-      const nonceRes = await fetch(`${httpOrigin(opts.ingressProxyHost)}/xrpc/${GET_NONCE_NSID}`, {
+      const nonceRes = await fetch(`${httpOrigin(opts.ingressProxyHost, opts.tls)}/xrpc/${GET_NONCE_NSID}`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${nonceToken}`,
@@ -374,7 +374,7 @@ export async function createSubscriber(
         signatures: [{ key: did, signature: encodeBase64(sig) }],
       });
       const subscribeToken = await opts.getServiceAuthToken(SUBSCRIBE_NSID);
-      const wsUrl = `${wsOrigin(opts.ingressProxyHost)}/xrpc/${SUBSCRIBE_NSID}?registration=${
+      const wsUrl = `${wsOrigin(opts.ingressProxyHost, opts.tls)}/xrpc/${SUBSCRIBE_NSID}?registration=${
         encodeURIComponent(registration)
       }&did=${encodeURIComponent(did)}&service_auth=${encodeURIComponent(subscribeToken)}`;
 
@@ -458,7 +458,7 @@ export interface TunnelClientOptions {
   ingressProxyHost: string;
   subscriberSubdomain: string;
   nsid?: string;
-  readable: ReadableStream<Uint8Array>;
+  readable: ReadableStream<Uint8Array<ArrayBuffer>>;
   writable: WritableStream<Uint8Array>;
 }
 
