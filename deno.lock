@@ -798,6 +798,7 @@
           "jsr:@publicdomainrelay/logger@0"
         ]
       },
+      "jsr:@publicdomainrelay/tls-localhost@0.0.0": {},
       "jsr:@publicdomainrelay/trust-graph-abc@0.0.0": {},
       "jsr:@publicdomainrelay/trust-graph-bsky-mutuals@0.0.0": {
         "dependencies": [
