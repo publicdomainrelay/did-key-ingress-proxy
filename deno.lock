@@ -306,6 +306,8 @@
           "npm:@atproto/oauth-client@~0.7.5"
         ]
       },
+      "jsr:@publicdomainrelay/atproto-oauth-server-abc@0.0.0": {},
+      "jsr:@publicdomainrelay/atproto-oauth-server-deno@0.0.0": {},
       "jsr:@publicdomainrelay/atproto-relay-abc@0.0.0": {
         "dependencies": [
           "jsr:@publicdomainrelay/atproto-relay-common@0",
@@ -686,6 +688,7 @@
       },
       "jsr:@publicdomainrelay/market-settlement-free@0.0.0": {},
       "jsr:@publicdomainrelay/market-settlement-x402@0.0.0": {},
+      "jsr:@publicdomainrelay/oauth-server-common@0.0.0": {},
       "jsr:@publicdomainrelay/oidc-issuer-abc@0.0.0": {
         "dependencies": [
           "jsr:@publicdomainrelay/logger@0"
