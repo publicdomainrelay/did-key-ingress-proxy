@@ -372,7 +372,7 @@
           "jsr:@publicdomainrelay/requester-abc@0",
           "jsr:@publicdomainrelay/requester-xrpc@0",
           "jsr:@publicdomainrelay/serve@0",
-          "npm:@atproto/crypto@~0.4.4",
+          "npm:@atproto/crypto@0.5",
           "npm:@atproto/identity@0.5"
         ]
       },
@@ -545,6 +545,13 @@
           "jsr:@publicdomainrelay/market-lexicons@0"
         ]
       },
+      "jsr:@publicdomainrelay/hono-factory-market-policy-host@0.0.0": {
+        "dependencies": [
+          "jsr:@hono/hono@4",
+          "jsr:@publicdomainrelay/market-policy-common@0",
+          "jsr:@publicdomainrelay/policy-common@0"
+        ]
+      },
       "jsr:@publicdomainrelay/hono-factory-market-settlement-free@0.0.0": {
         "dependencies": [
           "jsr:@hono/hono@4",
@@ -619,7 +626,7 @@
         "dependencies": [
           "npm:@atproto/api@~0.20.8",
           "npm:@atproto/common-web@0.5",
-          "npm:@atproto/crypto@~0.4.4",
+          "npm:@atproto/crypto@0.5",
           "npm:@atproto/identity@0.5",
           "npm:@atproto/xrpc-server@~0.11.1",
           "npm:@atproto/xrpc@0.7"
@@ -627,51 +634,86 @@
       },
       "jsr:@publicdomainrelay/market-bidder-abc@0.0.0": {},
       "jsr:@publicdomainrelay/market-bidder-agent@0.0.0": {},
-      "jsr:@publicdomainrelay/market-bidder-compute@0.0.0": {},
+      "jsr:@publicdomainrelay/market-bidder-compute@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/market-policy@0"
+        ]
+      },
       "jsr:@publicdomainrelay/market-bidder-keys@0.0.0": {},
-      "jsr:@publicdomainrelay/market-bidder-worker@0.0.0": {},
-      "jsr:@publicdomainrelay/market-bidder@0.0.0": {},
+      "jsr:@publicdomainrelay/market-bidder-worker@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/market-policy@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/market-bidder@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/market-policy-trust-abc@0",
+          "jsr:@publicdomainrelay/market-policy-trust-cache@0"
+        ]
+      },
       "jsr:@publicdomainrelay/market-common@0.0.0": {},
       "jsr:@publicdomainrelay/market-lexicons@0.0.0": {
         "dependencies": [
           "npm:@atproto/lex@~0.1.3"
         ]
       },
-      "jsr:@publicdomainrelay/market-policy-abc@0.0.0": {
-        "dependencies": [
-          "jsr:@publicdomainrelay/market-common@0"
-        ]
-      },
+      "jsr:@publicdomainrelay/market-policy-abc@0.0.0": {},
+      "jsr:@publicdomainrelay/market-policy-common@0.0.0": {},
       "jsr:@publicdomainrelay/market-policy-direct-network-bsky-mutual@0.0.0": {
         "dependencies": [
-          "jsr:@publicdomainrelay/market-lexicons@0",
-          "jsr:@publicdomainrelay/market-policy-abc@0",
-          "jsr:@publicdomainrelay/trust-graph-abc@0"
+          "jsr:@publicdomainrelay/market-policy-abc@0"
         ]
       },
       "jsr:@publicdomainrelay/market-policy-direct-network-tangled-vouch@0.0.0": {
         "dependencies": [
-          "jsr:@publicdomainrelay/market-lexicons@0",
-          "jsr:@publicdomainrelay/market-policy-abc@0",
-          "jsr:@publicdomainrelay/trust-graph-abc@0"
-        ]
-      },
-      "jsr:@publicdomainrelay/market-policy-only-me@0.0.0": {
-        "dependencies": [
-          "jsr:@publicdomainrelay/market-lexicons@0",
           "jsr:@publicdomainrelay/market-policy-abc@0"
         ]
       },
-      "jsr:@publicdomainrelay/market-policy-remote@0.0.0": {
+      "jsr:@publicdomainrelay/market-policy-engine-service@0.0.0": {
         "dependencies": [
           "jsr:@publicdomainrelay/market-common@0",
           "jsr:@publicdomainrelay/market-lexicons@0",
           "jsr:@publicdomainrelay/market-policy-abc@0"
         ]
       },
-      "jsr:@publicdomainrelay/market-policy-workflow-gha@0.0.0": {
+      "jsr:@publicdomainrelay/market-policy-engine-worker@0.0.0": {
         "dependencies": [
+          "jsr:@publicdomainrelay/market-policy-abc@0",
+          "jsr:@publicdomainrelay/market-policy-common@0",
+          "jsr:@publicdomainrelay/market-policy-registry@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/market-policy-host-xrpc@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/market-policy-common@0",
+          "jsr:@publicdomainrelay/market-policy-engine-service@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/market-policy-only-me@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/market-policy-abc@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/market-policy-registry@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/market-policy-abc@0",
+          "jsr:@publicdomainrelay/market-policy-direct-network-bsky-mutual@0",
+          "jsr:@publicdomainrelay/market-policy-direct-network-tangled-vouch@0",
+          "jsr:@publicdomainrelay/market-policy-only-me@0",
+          "jsr:@publicdomainrelay/market-policy-work@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/market-policy-trust-abc@0.0.0": {},
+      "jsr:@publicdomainrelay/market-policy-trust-cache@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/market-common@0",
           "jsr:@publicdomainrelay/market-lexicons@0",
+          "jsr:@publicdomainrelay/market-policy-trust-abc@0",
+          "jsr:@publicdomainrelay/trust-graph-abc@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/market-policy-work@0.0.0": {
+        "dependencies": [
           "jsr:@publicdomainrelay/market-policy-abc@0"
         ]
       },
@@ -679,11 +721,10 @@
         "dependencies": [
           "jsr:@publicdomainrelay/market-lexicons@0",
           "jsr:@publicdomainrelay/market-policy-abc@0",
-          "jsr:@publicdomainrelay/market-policy-direct-network-bsky-mutual@0",
-          "jsr:@publicdomainrelay/market-policy-direct-network-tangled-vouch@0",
-          "jsr:@publicdomainrelay/market-policy-only-me@0",
-          "jsr:@publicdomainrelay/market-policy-remote@0",
-          "jsr:@publicdomainrelay/market-policy-workflow-gha@0"
+          "jsr:@publicdomainrelay/market-policy-common@0",
+          "jsr:@publicdomainrelay/market-policy-engine-service@0",
+          "jsr:@publicdomainrelay/market-policy-engine-worker@0",
+          "jsr:@publicdomainrelay/market-policy-registry@0"
         ]
       },
       "jsr:@publicdomainrelay/market-settlement-free@0.0.0": {},
@@ -765,12 +806,15 @@
           "jsr:@publicdomainrelay/market-atproto@0",
           "jsr:@publicdomainrelay/market-common@0",
           "jsr:@publicdomainrelay/market-lexicons@0",
+          "jsr:@publicdomainrelay/market-policy-abc@0",
+          "jsr:@publicdomainrelay/market-policy@0",
+          "jsr:@publicdomainrelay/operator-discovery-badge-blue-keys@0",
           "jsr:@publicdomainrelay/requester-abc@0",
           "jsr:@publicdomainrelay/serve@0",
           "jsr:@publicdomainrelay/trust-graph-tangled-graph@0",
           "npm:@atproto/common-web@0.5",
           "npm:@atproto/common@0.5",
-          "npm:@atproto/crypto@~0.4.4",
+          "npm:@atproto/crypto@0.5",
           "npm:@atproto/identity@0.5"
         ]
       },
