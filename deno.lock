@@ -5,8 +5,7 @@
     "jsr:@cliffy/flags@1.2.1": "1.2.1",
     "jsr:@cliffy/internal@1.2.1": "1.2.1",
     "jsr:@cliffy/table@1.2.1": "1.2.1",
-    "jsr:@hono/hono@*": "4.12.24",
-    "jsr:@hono/hono@4": "4.12.24",
+    "jsr:@hono/hono@*": "4.12.28",
     "jsr:@std/assert@^1.0.19": "1.0.19",
     "jsr:@std/fmt@^1.0.10": "1.0.10",
     "jsr:@std/internal@^1.0.12": "1.0.14",
@@ -43,8 +42,8 @@
         "jsr:@std/fmt"
       ]
     },
-    "@hono/hono@4.12.24": {
-      "integrity": "a74a40f06ae6704ddd0e8e576f6da9d34666c3e1e0f5412a2c1ff800ffd092f4"
+    "@hono/hono@4.12.28": {
+      "integrity": "4f109a4673ee3131191be485affc98131508d8fcf5621ffa24775f4205526d92"
     },
     "@std/assert@1.0.19": {
       "integrity": "eaada96ee120cb980bc47e040f82814d786fe8162ecc53c91d8df60b8755991e",
@@ -368,7 +367,7 @@
           "jsr:@publicdomainrelay/market-atproto@0",
           "jsr:@publicdomainrelay/market-common@0",
           "jsr:@publicdomainrelay/market-lexicons@0",
-          "jsr:@publicdomainrelay/market-policy@0",
+          "jsr:@publicdomainrelay/policy-engine-cli-options@0",
           "jsr:@publicdomainrelay/requester-abc@0",
           "jsr:@publicdomainrelay/requester-xrpc@0",
           "jsr:@publicdomainrelay/serve@0",
@@ -545,13 +544,6 @@
           "jsr:@publicdomainrelay/market-lexicons@0"
         ]
       },
-      "jsr:@publicdomainrelay/hono-factory-market-policy-host@0.0.0": {
-        "dependencies": [
-          "jsr:@hono/hono@4",
-          "jsr:@publicdomainrelay/market-policy-common@0",
-          "jsr:@publicdomainrelay/policy-common@0"
-        ]
-      },
       "jsr:@publicdomainrelay/hono-factory-market-settlement-free@0.0.0": {
         "dependencies": [
           "jsr:@hono/hono@4",
@@ -574,14 +566,13 @@
           "npm:hono@^4.12.23"
         ]
       },
-      "jsr:@publicdomainrelay/hono-factory-policy-builtin@0.0.0": {
+      "jsr:@publicdomainrelay/hono-factory-policy-engine@0.0.0": {
         "dependencies": [
-          "jsr:@hono/hono@4",
-          "jsr:@publicdomainrelay/hono-error-middleware@0",
-          "jsr:@publicdomainrelay/logger@0",
-          "jsr:@publicdomainrelay/policy-abc@0",
-          "jsr:@publicdomainrelay/policy-builtin@0",
-          "jsr:@publicdomainrelay/policy-common@0"
+          "jsr:@publicdomainrelay/policy-common@0",
+          "jsr:@publicdomainrelay/policy-deno-typescript-shared@0",
+          "jsr:@publicdomainrelay/policy-engine-abc@0",
+          "jsr:@publicdomainrelay/policy-engine-evaluator@0",
+          "jsr:@publicdomainrelay/policy-engine-scope-cache@0"
         ]
       },
       "jsr:@publicdomainrelay/hono-factory-requester-xrpc@0.0.0": {
@@ -634,97 +625,14 @@
       },
       "jsr:@publicdomainrelay/market-bidder-abc@0.0.0": {},
       "jsr:@publicdomainrelay/market-bidder-agent@0.0.0": {},
-      "jsr:@publicdomainrelay/market-bidder-compute@0.0.0": {
-        "dependencies": [
-          "jsr:@publicdomainrelay/market-policy@0"
-        ]
-      },
+      "jsr:@publicdomainrelay/market-bidder-compute@0.0.0": {},
       "jsr:@publicdomainrelay/market-bidder-keys@0.0.0": {},
-      "jsr:@publicdomainrelay/market-bidder-worker@0.0.0": {
-        "dependencies": [
-          "jsr:@publicdomainrelay/market-policy@0"
-        ]
-      },
-      "jsr:@publicdomainrelay/market-bidder@0.0.0": {
-        "dependencies": [
-          "jsr:@publicdomainrelay/market-policy-trust-abc@0",
-          "jsr:@publicdomainrelay/market-policy-trust-cache@0"
-        ]
-      },
+      "jsr:@publicdomainrelay/market-bidder-worker@0.0.0": {},
+      "jsr:@publicdomainrelay/market-bidder@0.0.0": {},
       "jsr:@publicdomainrelay/market-common@0.0.0": {},
       "jsr:@publicdomainrelay/market-lexicons@0.0.0": {
         "dependencies": [
           "npm:@atproto/lex@~0.1.3"
-        ]
-      },
-      "jsr:@publicdomainrelay/market-policy-abc@0.0.0": {},
-      "jsr:@publicdomainrelay/market-policy-common@0.0.0": {},
-      "jsr:@publicdomainrelay/market-policy-direct-network-bsky-mutual@0.0.0": {
-        "dependencies": [
-          "jsr:@publicdomainrelay/market-policy-abc@0"
-        ]
-      },
-      "jsr:@publicdomainrelay/market-policy-direct-network-tangled-vouch@0.0.0": {
-        "dependencies": [
-          "jsr:@publicdomainrelay/market-policy-abc@0"
-        ]
-      },
-      "jsr:@publicdomainrelay/market-policy-engine-service@0.0.0": {
-        "dependencies": [
-          "jsr:@publicdomainrelay/market-common@0",
-          "jsr:@publicdomainrelay/market-lexicons@0",
-          "jsr:@publicdomainrelay/market-policy-abc@0"
-        ]
-      },
-      "jsr:@publicdomainrelay/market-policy-engine-worker@0.0.0": {
-        "dependencies": [
-          "jsr:@publicdomainrelay/market-policy-abc@0",
-          "jsr:@publicdomainrelay/market-policy-common@0",
-          "jsr:@publicdomainrelay/market-policy-registry@0"
-        ]
-      },
-      "jsr:@publicdomainrelay/market-policy-host-xrpc@0.0.0": {
-        "dependencies": [
-          "jsr:@publicdomainrelay/market-policy-common@0",
-          "jsr:@publicdomainrelay/market-policy-engine-service@0"
-        ]
-      },
-      "jsr:@publicdomainrelay/market-policy-only-me@0.0.0": {
-        "dependencies": [
-          "jsr:@publicdomainrelay/market-policy-abc@0"
-        ]
-      },
-      "jsr:@publicdomainrelay/market-policy-registry@0.0.0": {
-        "dependencies": [
-          "jsr:@publicdomainrelay/market-policy-abc@0",
-          "jsr:@publicdomainrelay/market-policy-direct-network-bsky-mutual@0",
-          "jsr:@publicdomainrelay/market-policy-direct-network-tangled-vouch@0",
-          "jsr:@publicdomainrelay/market-policy-only-me@0",
-          "jsr:@publicdomainrelay/market-policy-work@0"
-        ]
-      },
-      "jsr:@publicdomainrelay/market-policy-trust-abc@0.0.0": {},
-      "jsr:@publicdomainrelay/market-policy-trust-cache@0.0.0": {
-        "dependencies": [
-          "jsr:@publicdomainrelay/market-common@0",
-          "jsr:@publicdomainrelay/market-lexicons@0",
-          "jsr:@publicdomainrelay/market-policy-trust-abc@0",
-          "jsr:@publicdomainrelay/trust-graph-abc@0"
-        ]
-      },
-      "jsr:@publicdomainrelay/market-policy-work@0.0.0": {
-        "dependencies": [
-          "jsr:@publicdomainrelay/market-policy-abc@0"
-        ]
-      },
-      "jsr:@publicdomainrelay/market-policy@0.0.0": {
-        "dependencies": [
-          "jsr:@publicdomainrelay/market-lexicons@0",
-          "jsr:@publicdomainrelay/market-policy-abc@0",
-          "jsr:@publicdomainrelay/market-policy-common@0",
-          "jsr:@publicdomainrelay/market-policy-engine-service@0",
-          "jsr:@publicdomainrelay/market-policy-engine-worker@0",
-          "jsr:@publicdomainrelay/market-policy-registry@0"
         ]
       },
       "jsr:@publicdomainrelay/market-settlement-free@0.0.0": {},
@@ -767,18 +675,80 @@
           "jsr:@publicdomainrelay/package-store-abc@0"
         ]
       },
-      "jsr:@publicdomainrelay/policy-abc@0.0.0": {
+      "jsr:@publicdomainrelay/policies-gha-lite@0.0.0": {
         "dependencies": [
-          "jsr:@publicdomainrelay/policy-common@0"
-        ]
-      },
-      "jsr:@publicdomainrelay/policy-builtin@0.0.0": {
-        "dependencies": [
-          "jsr:@publicdomainrelay/policy-abc@0",
-          "jsr:@publicdomainrelay/policy-common@0"
+          "jsr:@publicdomainrelay/policy-deno-typescript-shared@0"
         ]
       },
       "jsr:@publicdomainrelay/policy-common@0.0.0": {},
+      "jsr:@publicdomainrelay/policy-deno-typescript-shared@0.0.0": {
+        "dependencies": [
+          "npm:@atproto/common-web@0.5",
+          "npm:@atproto/identity@0.5"
+        ]
+      },
+      "jsr:@publicdomainrelay/policy-deno-typescript@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/policy-deno-typescript-shared@0",
+          "jsr:@std/cli@1"
+        ]
+      },
+      "jsr:@publicdomainrelay/policy-engine-abc@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/policy-common@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/policy-engine-cli-options@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/policy-common@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/policy-engine-evaluator@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/policy-common@0",
+          "jsr:@publicdomainrelay/policy-deno-typescript-shared@0",
+          "jsr:@publicdomainrelay/policy-engine-abc@0",
+          "jsr:@publicdomainrelay/policy-engine-scope-cache@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/policy-engine-executor-gha-lite@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/policy-common@0",
+          "jsr:@publicdomainrelay/policy-engine-abc@0",
+          "jsr:@publicdomainrelay/policy-engine-server-gha-lite@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/policy-engine-executor-typescript@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/policy-common@0",
+          "jsr:@publicdomainrelay/policy-deno-typescript-shared@0",
+          "jsr:@publicdomainrelay/policy-deno-typescript@0",
+          "jsr:@publicdomainrelay/policy-engine-abc@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/policy-engine-scope-cache@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/policy-common@0"
+        ]
+      },
+      "jsr:@publicdomainrelay/policy-engine-server-gha-lite@0.0.0": {
+        "dependencies": [
+          "jsr:@hono/hono@^4.6.0",
+          "jsr:@std/assert@1",
+          "jsr:@std/cli@1",
+          "jsr:@std/fs@1",
+          "jsr:@std/path@1",
+          "jsr:@std/uuid@1",
+          "jsr:@std/yaml@1"
+        ]
+      },
+      "jsr:@publicdomainrelay/policy-seeder-atproto@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/policies-gha-lite@0",
+          "jsr:@publicdomainrelay/policy-common@0",
+          "jsr:@publicdomainrelay/policy-engine-abc@0"
+        ]
+      },
       "jsr:@publicdomainrelay/qemu-standalone@0.0.0": {},
       "jsr:@publicdomainrelay/rbac-atproto@0.0.0": {
         "dependencies": [
@@ -788,7 +758,9 @@
       },
       "jsr:@publicdomainrelay/requester-abc@0.0.0": {
         "dependencies": [
+          "jsr:@publicdomainrelay/cloud-init-common@0",
           "jsr:@publicdomainrelay/logger@0",
+          "jsr:@publicdomainrelay/policy-common@0",
           "jsr:@publicdomainrelay/serve@0"
         ]
       },
@@ -806,9 +778,14 @@
           "jsr:@publicdomainrelay/market-atproto@0",
           "jsr:@publicdomainrelay/market-common@0",
           "jsr:@publicdomainrelay/market-lexicons@0",
-          "jsr:@publicdomainrelay/market-policy-abc@0",
-          "jsr:@publicdomainrelay/market-policy@0",
           "jsr:@publicdomainrelay/operator-discovery-badge-blue-keys@0",
+          "jsr:@publicdomainrelay/policies-gha-lite@0",
+          "jsr:@publicdomainrelay/policy-deno-typescript@0",
+          "jsr:@publicdomainrelay/policy-engine-abc@0",
+          "jsr:@publicdomainrelay/policy-engine-cli-options@0",
+          "jsr:@publicdomainrelay/policy-engine-evaluator@0",
+          "jsr:@publicdomainrelay/policy-engine-executor-gha-lite@0",
+          "jsr:@publicdomainrelay/policy-engine-executor-typescript@0",
           "jsr:@publicdomainrelay/requester-abc@0",
           "jsr:@publicdomainrelay/serve@0",
           "jsr:@publicdomainrelay/trust-graph-tangled-graph@0",
