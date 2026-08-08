@@ -62,16 +62,30 @@ export class RelayState {
     subdomain: string,
     requestId: string,
     frame: string,
+    timeoutMs?: number,
   ): Promise<RelayResponse> {
     const subWs = this.subscribers.get(subdomain);
     if (!subWs || subWs.readyState !== WebSocket.OPEN) {
       return Promise.reject(new Error(`no active subscriber for subdomain ${subdomain}`));
     }
+    const t = timeoutMs ?? this.relayTimeoutMs;
     return new Promise<RelayResponse>((resolve, reject) => {
       const timer = setTimeout(() => {
         this.pendingRequests.delete(requestId);
-        reject(new Error(`relay timeout after ${this.relayTimeoutMs}ms`));
-      }, this.relayTimeoutMs);
+        // The subscriber didn't respond within the relay timeout — almost
+        // certainly a half-open/dead connection (Deno's WebSocket has no
+        // WS-level ping, so the death is otherwise silent). Evict it: closing
+        // the socket fires the client's onclose, which schedules a reconnect
+        // and re-register. Without this, every request to a dead subscriber
+        // hangs for relayTimeoutMs forever.
+        const deadWs = this.subscribers.get(subdomain);
+        if (deadWs) {
+          this.subscribers.delete(subdomain);
+          this.rejectSubscriberSubscriptions(subdomain);
+          this.onCloseConnection(deadWs, 1011, `subscriber unresponsive after ${t}ms`);
+        }
+        reject(new Error(`relay timeout after ${t}ms`));
+      }, t);
       this.pendingRequests.set(requestId, { resolve, reject, timer });
       this.onSendFrame(subWs, frame);
     });
@@ -90,6 +104,18 @@ export class RelayState {
       const requestId = frameParsed.requestId;
       const timer = setTimeout(() => {
         this.pendingRequests.delete(requestId);
+        // The subscriber didn't respond within the relay timeout — almost
+        // certainly a half-open/dead connection (Deno's WebSocket has no
+        // WS-level ping, so the death is otherwise silent). Evict it: closing
+        // the socket fires the client's onclose, which schedules a reconnect
+        // and re-register. Without this, every request to a dead subscriber
+        // hangs for relayTimeoutMs forever.
+        const deadWs = this.subscribers.get(subdomain);
+        if (deadWs) {
+          this.subscribers.delete(subdomain);
+          this.rejectSubscriberSubscriptions(subdomain);
+          this.onCloseConnection(deadWs, 1011, `subscriber unresponsive after ${this.relayTimeoutMs}ms`);
+        }
         reject(new Error(`relay timeout after ${this.relayTimeoutMs}ms`));
       }, this.relayTimeoutMs);
       this.pendingRequests.set(requestId, { resolve, reject, timer });

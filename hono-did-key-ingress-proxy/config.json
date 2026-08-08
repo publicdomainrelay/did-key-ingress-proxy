@@ -4,6 +4,8 @@
   "port": 8080,
   "unix-socket": "",
   "relay-timeout-ms": 30000,
+  "keepalive-ms": 5000,
+  "keepalive-timeout-ms": 5000,
   "reconnect-grace-ms": 10000,
   "nonce-ttl-ms": 60000
 }

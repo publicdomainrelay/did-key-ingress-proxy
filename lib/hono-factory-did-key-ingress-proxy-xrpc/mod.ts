@@ -33,6 +33,10 @@ export interface RelayFactoryOptions {
   hostname: string;
   serviceId?: string;
   relayTimeoutMs?: number;
+  /** How often to probe each registered subscriber for liveness (ms). */
+  keepaliveMs?: number;
+  /** How long a keepalive probe may take before the subscriber is evicted (ms). */
+  keepaliveTimeoutMs?: number;
   reconnectGraceMs?: number;
   nonceTtlMs?: number;
   /**
@@ -76,6 +80,50 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
     onCloseConnection: (ws, code, reason) => { ws.close(code, reason); },
   });
   const nonceStore = createNonceStore({ ttlMs: nonceTtlMs, resolveDidKey: opts.resolveDidKey });
+
+  // -- Subscriber keepalive --------------------------------------------------
+  // Probe each registered subscriber periodically with a lightweight request.
+  // Any response (even 404) proves the connection is alive; a timeout is
+  // handled by RelayState.dispatchRequest, which evicts the dead subscriber so
+  // its client reconnects. Detects half-open WSS connections that would
+  // otherwise fail silently (Deno's WebSocket has no WS-level ping).
+  const keepaliveMs = opts.keepaliveMs ?? 5_000;
+  const keepaliveTimeoutMs = opts.keepaliveTimeoutMs ?? 5_000;
+  const keepaliveIntervals = new Map<string, ReturnType<typeof setInterval>>();
+
+  function startSubscriberKeepalive(subdomain: string): void {
+    if (keepaliveIntervals.has(subdomain)) return;
+    const interval = setInterval(() => {
+      const subWs = state.subscribers.get(subdomain);
+      if (!subWs || subWs.readyState !== WebSocket.OPEN) {
+        clearInterval(interval);
+        keepaliveIntervals.delete(subdomain);
+        return;
+      }
+      const requestId = crypto.randomUUID();
+      state.dispatchRequest(subdomain, requestId, JSON.stringify({
+        $type: `${SUBSCRIBE_NSID}#request`,
+        requestId,
+        method: "GET",
+        path: "/xrpc/com.publicdomainrelay.temp.keepalive.ping",
+        params: {},
+        body: null,
+        headers: {},
+      }), keepaliveTimeoutMs).then(
+        () => {}, // responded (any status) — alive
+        () => {}, // timed out — dispatchRequest already evicted + closed it
+      );
+    }, keepaliveMs);
+    keepaliveIntervals.set(subdomain, interval);
+  }
+
+  function stopSubscriberKeepalive(subdomain: string): void {
+    const iv = keepaliveIntervals.get(subdomain);
+    if (iv) {
+      clearInterval(iv);
+      keepaliveIntervals.delete(subdomain);
+    }
+  }
 
   return createFactory({
     initApp: (app) => {
@@ -168,6 +216,7 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
             state.subscribers.set(subdomain, raw);
             log.info("subscriber_connected", { component: "relay", subdomain, key: result.key });
             state.flushReconnectQueue(subdomain, raw);
+            startSubscriberKeepalive(subdomain);
             raw.send(JSON.stringify({
               $type: `${SUBSCRIBE_NSID}#registered`,
               subdomain,
@@ -225,6 +274,7 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
             state.subscribers.delete(subdomain);
             state.drainToReconnectQueue(subdomain);
             state.rejectSubscriberSubscriptions(subdomain);
+            stopSubscriberKeepalive(subdomain);
             log.info("subscriber_disconnected", { component: "relay", subdomain });
           },
 
@@ -232,6 +282,7 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
             state.subscribers.delete(subdomain);
             state.drainToReconnectQueue(subdomain);
             state.rejectSubscriberSubscriptions(subdomain);
+            stopSubscriberKeepalive(subdomain);
           },
         };
       });

@@ -6,6 +6,7 @@
     "jsr:@cliffy/internal@1.2.1": "1.2.1",
     "jsr:@cliffy/table@1.2.1": "1.2.1",
     "jsr:@hono/hono@*": "4.12.28",
+    "jsr:@hono/hono@4": "4.12.28",
     "jsr:@std/assert@^1.0.19": "1.0.19",
     "jsr:@std/fmt@^1.0.10": "1.0.10",
     "jsr:@std/internal@^1.0.12": "1.0.14",
@@ -662,6 +663,7 @@
       },
       "jsr:@publicdomainrelay/market-settlement-free@0.0.0": {},
       "jsr:@publicdomainrelay/market-settlement-x402@0.0.0": {},
+      "jsr:@publicdomainrelay/oauth-scope@0.0.0": {},
       "jsr:@publicdomainrelay/oauth-server-common@0.0.0": {},
       "jsr:@publicdomainrelay/oidc-issuer-abc@0.0.0": {
         "dependencies": [

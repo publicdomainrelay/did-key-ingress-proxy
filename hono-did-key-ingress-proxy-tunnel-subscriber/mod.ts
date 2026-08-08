@@ -56,6 +56,14 @@ const sub = await createSubscriber({
   getServiceAuthToken,
   ingressProxyHost,
   tunnelTarget: { hostname: targetHost, port: targetPort },
+  // Respond to any HTTP-style request (e.g. the relay's keepalive probe) so the
+  // connection is treated as alive. The tunnel-subscriber only serves the ssh
+  // tunnel; everything else is 404.
+  handleRequest: async (req) => ({
+    status: 404,
+    body: { error: "NotFound", message: `tunnel subscriber: ${req.method} ${req.path} not served` },
+    contentType: "application/json",
+  }),
 });
 
 const guestFqdn = `${sub.subdomain}.${ingressProxyHost}`;

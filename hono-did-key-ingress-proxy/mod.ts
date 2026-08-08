@@ -59,6 +59,8 @@ const app = createRelayFactory({
   hostname: options.hostname as string,
   serviceId: options.serviceId as string | undefined,
   relayTimeoutMs: options.relayTimeoutMs as number | undefined,
+  keepaliveMs: options.keepaliveMs as number | undefined,
+  keepaliveTimeoutMs: options.keepaliveTimeoutMs as number | undefined,
   reconnectGraceMs: options.reconnectGraceMs as number | undefined,
   nonceTtlMs: options.nonceTtlMs as number | undefined,
   additionalHosts: additionalHosts.length ? additionalHosts : undefined,

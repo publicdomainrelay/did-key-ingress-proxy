@@ -32,6 +32,18 @@
       "env": "RELAY_TIMEOUT_MS",
       "default": 30000
     },
+    "keepalive-ms": {
+      "type": "number",
+      "description": "How often to probe each registered subscriber for liveness (detects dead half-open WSS connections)",
+      "env": "KEEPALIVE_MS",
+      "default": 5000
+    },
+    "keepalive-timeout-ms": {
+      "type": "number",
+      "description": "How long a keepalive probe may take before the subscriber is evicted (eviction triggers the client to reconnect)",
+      "env": "KEEPALIVE_TIMEOUT_MS",
+      "default": 5000
+    },
     "reconnect-grace-ms": {
       "type": "number",
       "description": "Grace period for reconnect",
