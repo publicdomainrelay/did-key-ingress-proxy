@@ -1,3 +1,5 @@
+import { verifyJwt } from "@atproto/xrpc-server";
+
 export const SUBSCRIBE_NSID = "com.fedproxy.temp.xrpc.subscribe";
 export const GET_NONCE_NSID = "com.fedproxy.temp.xrpc.getRegistrationNonce";
 export const TUNNEL_NSID = "com.fedproxy.temp.xrpc.tunnel";
@@ -5,6 +7,9 @@ export const TUNNEL_NSID = "com.fedproxy.temp.xrpc.tunnel";
 export const DEFAULT_MARKET_SERVICE_ID = "pdr_temp_market";
 
 export { hostnameOnly, hostnameToDid, didToSubdomain } from "@publicdomainrelay/hostname-helpers";
+
+/** Resolve a non-did:key DID (e.g. did:plc) to its atproto signing key (a did:key string). */
+export type ResolveDidKey = (did: string) => Promise<string>;
 
 export interface RelayRequestFrame {
   requestId: string;
@@ -59,12 +64,30 @@ export function decodeJwtPayload(token: string): Record<string, unknown> {
   return JSON.parse(json);
 }
 
-export function verifyServiceAuth(
+async function verifyServiceAuthJwt(
+  token: string,
+  audDid: string,
+  lxm: string,
+  resolveDidKey?: ResolveDidKey,
+): Promise<Record<string, unknown>> {
+  const payload = await verifyJwt(token, null, lxm, async (did: string) => {
+    if (did.startsWith("did:key:")) return did;
+    if (!resolveDidKey) throw new Error(`cannot resolve signing key for ${did}`);
+    return await resolveDidKey(did);
+  }) as Record<string, unknown>;
+  if (payload.aud !== audDid) {
+    throw new Error(`aud mismatch: expected ${audDid}, got ${payload.aud}`);
+  }
+  return payload;
+}
+
+export async function verifyServiceAuth(
   authHeader: string | null | undefined,
   audDid: string,
   lxm: string,
   serviceAuth?: string,
-): void {
+  resolveDidKey?: ResolveDidKey,
+): Promise<void> {
   // WebSocket clients cannot set request headers, so the subscribe handshake
   // carries the service-auth token as a `service_auth` query param instead.
   let token: string;
@@ -79,23 +102,7 @@ export function verifyServiceAuth(
   } else {
     throw new Error("missing Authorization header");
   }
-  let payload: Record<string, unknown>;
-  try {
-    payload = decodeJwtPayload(token);
-  } catch {
-    throw new Error("failed to decode service auth JWT");
-  }
-  if (payload.aud !== audDid) {
-    throw new Error(
-      `aud mismatch: expected ${audDid}, got ${payload.aud}`,
-    );
-  }
-  if (payload.lxm !== lxm) {
-    throw new Error(`lxm mismatch: expected ${lxm}, got ${payload.lxm}`);
-  }
-  if (typeof payload.exp === "number" && payload.exp * 1000 < Date.now()) {
-    throw new Error("service auth token expired");
-  }
+  await verifyServiceAuthJwt(token, audDid, lxm, resolveDidKey);
 }
 
 export interface VerifyServiceAuthOptions {
@@ -120,27 +127,16 @@ export async function verifyServiceAuthExt(
   if (parts.length !== 2 || parts[0].toLowerCase() !== "bearer") {
     throw new Error("Authorization header must be Bearer <token>");
   }
-  const token = parts[1];
 
-  let payload: Record<string, unknown>;
-  try {
-    payload = decodeJwtPayload(token);
-  } catch {
-    throw new Error("failed to decode service auth JWT");
-  }
-
-  const audDid = `did:web:${opts.hostname}`;
-  if (payload.aud !== audDid) {
-    throw new Error(`aud mismatch: expected ${audDid}, got ${payload.aud}`);
-  }
-
-  if (payload.lxm !== opts.lxm) {
-    throw new Error(`lxm mismatch: expected ${opts.lxm}, got ${payload.lxm}`);
-  }
-
-  if (typeof payload.exp === "number" && payload.exp * 1000 < Date.now()) {
-    throw new Error("service auth token expired");
-  }
+  const idResolver = opts.idResolver as
+    | { did: { resolveAtprotoKey(did: string): Promise<string> } }
+    | undefined;
+  const payload = await verifyServiceAuthJwt(
+    parts[1],
+    `did:web:${opts.hostname}`,
+    opts.lxm,
+    idResolver ? (did: string) => idResolver.did.resolveAtprotoKey(did) : undefined,
+  );
 
   const issuerDid = payload.iss as string;
   if (!issuerDid?.startsWith("did:")) {

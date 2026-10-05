@@ -80,6 +80,7 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
     onCloseConnection: (ws, code, reason) => { ws.close(code, reason); },
   });
   const nonceStore = createNonceStore({ ttlMs: nonceTtlMs, resolveDidKey: opts.resolveDidKey });
+  const resolveDidKey = opts.resolveDidKey;
 
   // -- Subscriber keepalive --------------------------------------------------
   // Probe each registered subscriber periodically with a lightweight request.
@@ -162,7 +163,7 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
       app.post(`/xrpc/${GET_NONCE_NSID}`, async (c, next) => {
         if (!isControlHost(hostnameOnly(c.req.header("host") ?? new URL(c.req.url).host))) return next();
         try {
-          await verifyServiceAuth(c.req.header("Authorization"), hostnameToDid(hostname), GET_NONCE_NSID);
+          await verifyServiceAuth(c.req.header("Authorization"), hostnameToDid(hostname), GET_NONCE_NSID, undefined, resolveDidKey);
         } catch (err) {
           log.warn("auth_denied", { component: "relay", nsid: GET_NONCE_NSID, error: String(err) });
           return c.json({ error: "AuthenticationRequired", message: String(err) }, 401);
@@ -291,7 +292,7 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
         if (!isControlHost(hostnameOnly(c.req.header("host") ?? new URL(c.req.url).host))) return next();
         try {
           const serviceAuth = c.req.query("service_auth");
-          await verifyServiceAuth(c.req.header("Authorization"), hostnameToDid(hostname), SUBSCRIBE_NSID, serviceAuth);
+          await verifyServiceAuth(c.req.header("Authorization"), hostnameToDid(hostname), SUBSCRIBE_NSID, serviceAuth, resolveDidKey);
         } catch (err) {
           log.warn("auth_denied", { component: "relay", nsid: SUBSCRIBE_NSID, error: String(err) });
           return c.json({ error: "AuthenticationRequired", message: String(err) }, 401);
