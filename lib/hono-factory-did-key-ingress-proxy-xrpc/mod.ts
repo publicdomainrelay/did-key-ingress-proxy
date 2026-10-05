@@ -12,6 +12,7 @@ import {
 } from "@publicdomainrelay/did-key-ingress-proxy-common";
 import { RelayState } from "@publicdomainrelay/did-key-ingress-proxy-abc";
 import {
+  createDidKeyResolver,
   createNonceStore,
   verifyServiceAuth,
 } from "@publicdomainrelay/did-key-ingress-proxy-xrpc";
@@ -53,9 +54,16 @@ export interface RelayFactoryOptions {
   allowedDids?: string[];
   /**
    * Resolve a non-did:key DID (e.g. did:plc) to its atproto signing key
-   * (a did:key string). When omitted, only did:key DIDs are accepted.
+   * (a did:key string). Defaults to resolution through the atproto
+   * IdResolver: did:plc against the PLC directory, did:web against the
+   * identity's did.json. Supply this to override the resolution strategy.
    */
   resolveDidKey?: (did: string) => Promise<string>;
+  /**
+   * PLC directory base URL used by the default `resolveDidKey`.
+   * Default: https://plc.directory. Ignored when `resolveDidKey` is supplied.
+   */
+  plcDirectoryUrl?: string;
 }
 
 export function createRelayFactory(opts: RelayFactoryOptions) {
@@ -79,8 +87,13 @@ export function createRelayFactory(opts: RelayFactoryOptions) {
     onSendFrame: (ws, frame) => { ws.send(frame); },
     onCloseConnection: (ws, code, reason) => { ws.close(code, reason); },
   });
-  const nonceStore = createNonceStore({ ttlMs: nonceTtlMs, resolveDidKey: opts.resolveDidKey });
-  const resolveDidKey = opts.resolveDidKey;
+  // The relay verifies the service-auth signature, so it needs the issuer's
+  // atproto signing key. did:key issuers carry it inline; every other method
+  // (did:plc, did:web) is resolved here. Leaving this unresolved would refuse
+  // every did:plc subscriber, which is the normal case for the market flow.
+  const resolveDidKey = opts.resolveDidKey ??
+    createDidKeyResolver({ plcDirectoryUrl: opts.plcDirectoryUrl });
+  const nonceStore = createNonceStore({ ttlMs: nonceTtlMs, resolveDidKey });
 
   // -- Subscriber keepalive --------------------------------------------------
   // Probe each registered subscriber periodically with a lightweight request.

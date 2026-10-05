@@ -65,6 +65,7 @@ const app = createRelayFactory({
   nonceTtlMs: options.nonceTtlMs as number | undefined,
   additionalHosts: additionalHosts.length ? additionalHosts : undefined,
   allowedDids: allowedDids.length ? allowedDids : undefined,
+  plcDirectoryUrl: options.plcDirectoryUrl as string | undefined,
 }).createApp();
 
 const unixSocket = options.unixSocket as string | undefined;

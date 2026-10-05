@@ -1,7 +1,28 @@
 import type { NonceStore, VerifyResult } from "@publicdomainrelay/did-key-ingress-proxy-abc";
 import { verifySignature } from "@atproto/crypto";
+import { IdResolver } from "@atproto/identity";
 export { verifyServiceAuth, verifyServiceAuthExt } from "@publicdomainrelay/did-key-ingress-proxy-common";
 export type { VerifyServiceAuthOptions, VerifyServiceAuthResult } from "@publicdomainrelay/did-key-ingress-proxy-common";
+
+export interface DidKeyResolverOptions {
+  /** PLC directory base URL. Default: https://plc.directory */
+  plcDirectoryUrl?: string;
+}
+
+/**
+ * Build the did -> atproto signing key (did:key) resolver the relay's
+ * service-auth verifier needs for non-did:key issuers. Resolution goes
+ * through the atproto IdResolver, so did:plc reads the PLC directory and
+ * did:web reads the identity's did.json.
+ */
+export function createDidKeyResolver(
+  opts: DidKeyResolverOptions = {},
+): (did: string) => Promise<string> {
+  const idResolver = new IdResolver(
+    opts.plcDirectoryUrl ? { plcUrl: opts.plcDirectoryUrl } : {},
+  );
+  return (did: string) => idResolver.did.resolveAtprotoKey(did);
+}
 
 interface NonceEntry {
   key: string;

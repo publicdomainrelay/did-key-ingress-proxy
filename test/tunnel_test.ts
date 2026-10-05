@@ -17,6 +17,10 @@ function b64url(obj: unknown): string {
   return btoa(JSON.stringify(obj)).replace(/=+$/, "").replace(/\+/g, "-").replace(/\//g, "_");
 }
 
+function b64urlBytes(bytes: Uint8Array): string {
+  return btoa(String.fromCharCode(...bytes)).replace(/=+$/, "").replace(/\+/g, "-").replace(/\//g, "_");
+}
+
 function concat(chunks: Uint8Array[]): Uint8Array {
   const total = chunks.reduce((n, c) => n + c.length, 0);
   const out = new Uint8Array(total);
@@ -74,10 +78,14 @@ Deno.test({
 
     const keypair = await Secp256k1Keypair.create({ exportable: true });
     const did = keypair.did();
-    const getServiceAuthToken = (nsid: string): Promise<string> => {
+    // The relay verifies the service-auth signature, so sign for real. The
+    // issuer is a did:key, which the verifier resolves without a network hop.
+    const getServiceAuthToken = async (nsid: string): Promise<string> => {
       const header = b64url({ alg: "ES256K", typ: "JWT" });
       const payload = b64url({ iss: did, aud: "did:web:localhost", lxm: nsid, exp: Math.floor(Date.now() / 1000) + 300 });
-      return Promise.resolve(`${header}.${payload}.x`);
+      const signingInput = `${header}.${payload}`;
+      const sig = await keypair.sign(new TextEncoder().encode(signingInput));
+      return `${signingInput}.${b64urlBytes(sig)}`;
     };
 
     const sub = await createSubscriber({

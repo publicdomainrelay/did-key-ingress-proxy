@@ -67,6 +67,12 @@
       "description": "Comma-separated DIDs allowed to register. Empty = allow all.",
       "env": "ALLOWED_DIDS",
       "default": ""
+    },
+    "plc-directory-url": {
+      "type": "string",
+      "description": "PLC directory used to resolve did:plc subscriber signing keys for service-auth verification",
+      "env": "PLC_DIRECTORY_URL",
+      "default": "https://plc.directory"
     }
   }
 }
