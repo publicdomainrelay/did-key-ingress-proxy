@@ -57,13 +57,6 @@ export function summarizeFrame(frame: unknown): Record<string, unknown> {
   return summary;
 }
 
-export function decodeJwtPayload(token: string): Record<string, unknown> {
-  const payloadB64 = token.split(".")[1];
-  if (!payloadB64) throw new Error("malformed JWT");
-  const json = atob(payloadB64.replace(/-/g, "+").replace(/_/g, "/"));
-  return JSON.parse(json);
-}
-
 async function verifyServiceAuthJwt(
   token: string,
   audDid: string,
