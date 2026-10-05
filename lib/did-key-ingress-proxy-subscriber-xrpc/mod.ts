@@ -458,7 +458,7 @@ export interface TunnelClientOptions {
   ingressProxyHost: string;
   subscriberSubdomain: string;
   nsid?: string;
-  readable: ReadableStream<Uint8Array<ArrayBuffer>>;
+  readable: ReadableStream<Uint8Array<ArrayBufferLike>>;
   writable: WritableStream<Uint8Array>;
 }
 
