@@ -72,7 +72,12 @@ const unixSocket = options.unixSocket as string | undefined;
 const serve = createServe({
   logger,
   unix: unixSocket ? { socketPath: unixSocket } : undefined,
-  tcp: unixSocket ? undefined : { port: options.port as number },
+  tcp: unixSocket ? undefined : {
+    port: options.port as number,
+    certFile: options.tlsCertFile as string | undefined,
+    keyFile: options.tlsKeyFile as string | undefined,
+  },
+  portFile: options.portFile as string | undefined,
 });
 serve.app.route("/", app as never);
 
