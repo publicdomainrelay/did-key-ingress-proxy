@@ -5,6 +5,7 @@ import { Secp256k1Keypair } from "@atproto/crypto";
 import { Agent, CredentialSession } from "@atproto/api";
 import { IdResolver } from "@atproto/identity";
 import { createLogger } from "@publicdomainrelay/logger";
+import type { ServeListener } from "@publicdomainrelay/serve";
 import { hostnameOnly, DEFAULT_MARKET_SERVICE_ID, verifyServiceAuthExt } from "@publicdomainrelay/did-key-ingress-proxy-common";
 import { createSubscriber } from "@publicdomainrelay/did-key-ingress-proxy-subscriber-xrpc";
 import { createSubscriberFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-subscriber-xrpc";
@@ -122,8 +123,15 @@ const sub = await createSubscriber({
 registeredSubdomain = sub.subdomain;
 log.info("registered", { component: "client", subdomain: sub.subdomain, ingressRef: sub.ingressRef });
 
+const ingressUrl = `https://${sub.ingressRef.replace(/^did:web:/, "")}`;
+
+if (options.listenersFile) {
+  const listeners: ServeListener[] = [{ name: "relay", kind: "relay", address: ingressUrl }];
+  await Deno.writeTextFile(options.listenersFile as string, JSON.stringify({ listeners }) + "\n");
+  log.info("listeners_written", { component: "client", path: options.listenersFile, listeners });
+}
+
 if (options.writeProxyRefHttpToPath) {
-  const hostname = sub.ingressRef.replace(/^did:web:/, "");
-  await Deno.writeTextFile(options.writeProxyRefHttpToPath as string, `https://${hostname}\n`);
-  log.info("proxy_ref_written", { component: "client", path: options.writeProxyRefHttpToPath, url: `https://${hostname}` });
+  await Deno.writeTextFile(options.writeProxyRefHttpToPath as string, `${ingressUrl}\n`);
+  log.info("proxy_ref_written", { component: "client", path: options.writeProxyRefHttpToPath, url: ingressUrl });
 }

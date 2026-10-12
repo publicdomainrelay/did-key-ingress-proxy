@@ -40,6 +40,11 @@
     "write-proxy-ref-http-to-path": {
       "type": "string",
       "description": "Write proxy ref HTTPS URL to file"
+    },
+    "listeners-file": {
+      "type": "string",
+      "description": "File every bound listener (tcp, unix, relay) is reported to as JSON once listening",
+      "env": "LISTENERS_FILE"
     }
   }
 }
